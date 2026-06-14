@@ -18,6 +18,9 @@
     --text: #e2e8f0;
     --muted: #8892a4;
     --done: #22c55e;
+    --easy: #22c55e;
+    --medium: #f5a623;
+    --hard: #ef4444;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -30,221 +33,126 @@
     padding: 24px 16px 48px;
   }
 
-  header {
-    max-width: 740px;
-    margin: 0 auto 36px;
-  }
-
-  .tag {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.12em;
-    color: var(--accent);
-    text-transform: uppercase;
-    margin-bottom: 10px;
-  }
-
-  h1 {
-    font-size: clamp(26px, 5vw, 38px);
-    font-weight: 700;
-    line-height: 1.15;
-    margin-bottom: 10px;
-  }
-
+  header { max-width: 780px; margin: 0 auto 24px; }
+  .tag { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.12em; color: var(--accent); text-transform: uppercase; margin-bottom: 10px; }
+  h1 { font-size: clamp(22px, 5vw, 34px); font-weight: 700; line-height: 1.15; margin-bottom: 8px; }
   h1 span { color: var(--accent); }
+  .subtitle { color: var(--muted); font-size: 13px; line-height: 1.6; }
 
-  .subtitle {
-    color: var(--muted);
-    font-size: 14px;
-    font-weight: 300;
-  }
-
-  .meta-row {
-    display: flex;
-    gap: 20px;
-    margin-top: 20px;
-    flex-wrap: wrap;
-  }
-
-  .meta-chip {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 8px 14px;
-    font-size: 12px;
-    color: var(--muted);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
+  .meta-row { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+  .meta-chip { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 6px 12px; font-size: 11px; color: var(--muted); display: flex; align-items: center; gap: 5px; }
   .meta-chip strong { color: var(--text); }
 
-  /* Progress bar */
-  .progress-wrap {
-    max-width: 740px;
-    margin: 0 auto 32px;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 16px 20px;
+  .db-banner {
+    max-width: 780px; margin: 0 auto 20px;
+    background: linear-gradient(135deg, rgba(0,212,170,0.08), rgba(91,141,238,0.08));
+    border: 1px solid rgba(0,212,170,0.25); border-radius: 10px; padding: 12px 16px;
+    display: flex; align-items: center; gap: 12px;
   }
+  .db-icon { font-size: 22px; }
+  .db-info { flex: 1; }
+  .db-title { font-size: 13px; font-weight: 600; color: var(--accent); margin-bottom: 2px; }
+  .db-desc { font-size: 11px; color: var(--muted); line-height: 1.5; }
 
-  .progress-label {
-    display: flex;
-    justify-content: space-between;
-    font-size: 12px;
-    color: var(--muted);
-    margin-bottom: 10px;
-  }
-
+  .progress-wrap { max-width: 780px; margin: 0 auto 20px; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; }
+  .progress-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 8px; }
   .progress-label span { color: var(--accent); font-family: 'IBM Plex Mono', monospace; }
+  .bar-bg { background: var(--border); border-radius: 99px; height: 5px; overflow: hidden; }
+  .bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 99px; transition: width 0.5s ease; }
 
-  .bar-bg {
-    background: var(--border);
-    border-radius: 99px;
-    height: 6px;
-    overflow: hidden;
-  }
+  .container { max-width: 780px; margin: 0 auto; }
 
-  .bar-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--accent), var(--accent2));
-    border-radius: 99px;
-    transition: width 0.5s ease;
-  }
-
-  /* Phases */
-  .container { max-width: 740px; margin: 0 auto; }
-
-  .phase {
-    margin-bottom: 28px;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    overflow: hidden;
-  }
-
-  .phase-header {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 16px 20px;
-    background: var(--surface);
-    cursor: pointer;
-    user-select: none;
-  }
-
-  .phase-num {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 11px;
-    color: var(--accent);
-    min-width: 28px;
-  }
-
-  .phase-title { font-weight: 600; font-size: 15px; flex: 1; }
-
-  .phase-duration {
-    font-size: 11px;
-    color: var(--muted);
-    font-family: 'IBM Plex Mono', monospace;
-  }
-
-  .chevron {
-    color: var(--muted);
-    font-size: 12px;
-    transition: transform 0.2s;
-  }
-
+  .phase { margin-bottom: 20px; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .phase-header { display: flex; align-items: center; gap: 12px; padding: 13px 16px; background: var(--surface); cursor: pointer; user-select: none; }
+  .phase-num { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--accent); min-width: 26px; }
+  .phase-title { font-weight: 600; font-size: 14px; flex: 1; }
+  .phase-duration { font-size: 11px; color: var(--muted); font-family: 'IBM Plex Mono', monospace; }
+  .chevron { color: var(--muted); font-size: 11px; transition: transform 0.2s; }
   .phase.open .chevron { transform: rotate(180deg); }
-
   .phase-body { display: none; }
   .phase.open .phase-body { display: block; }
 
-  .day-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 14px;
-    padding: 14px 20px;
-    border-top: 1px solid var(--border);
-    transition: background 0.15s;
-  }
+  .day-item { border-top: 1px solid var(--border); }
+  .day-row { display: flex; align-items: flex-start; gap: 12px; padding: 11px 16px; cursor: pointer; transition: background 0.15s; }
+  .day-row:hover { background: rgba(255,255,255,0.025); }
 
-  .day-item:hover { background: rgba(255,255,255,0.02); }
+  .day-check { width: 17px; height: 17px; border: 2px solid var(--border); border-radius: 4px; flex-shrink: 0; margin-top: 2px; display: flex; align-items: center; justify-content: center; transition: all 0.15s; font-size: 10px; cursor: pointer; }
+  .day-check.checked { background: var(--done); border-color: var(--done); color: #fff; }
 
-  .day-check {
-    width: 18px;
-    height: 18px;
-    border: 2px solid var(--border);
-    border-radius: 4px;
-    cursor: pointer;
-    flex-shrink: 0;
-    margin-top: 2px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.15s;
-    font-size: 11px;
-  }
-
-  .day-check.checked {
-    background: var(--done);
-    border-color: var(--done);
-    color: #fff;
-  }
-
-  .day-label {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 11px;
-    color: var(--accent2);
-    min-width: 52px;
-    margin-top: 3px;
-  }
-
+  .day-label { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--accent2); min-width: 48px; margin-top: 2px; }
   .day-content { flex: 1; }
-  .day-title { font-size: 14px; font-weight: 500; margin-bottom: 4px; }
-  .day-desc { font-size: 12px; color: var(--muted); line-height: 1.6; }
-
-  .day-tags {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-    margin-top: 6px;
-  }
-
-  .dtag {
-    font-size: 10px;
-    padding: 2px 7px;
-    border-radius: 4px;
-    font-family: 'IBM Plex Mono', monospace;
-  }
-
+  .day-title { font-size: 13px; font-weight: 500; margin-bottom: 3px; }
+  .day-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .day-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 5px; }
+  .dtag { font-size: 10px; padding: 2px 6px; border-radius: 4px; font-family: 'IBM Plex Mono', monospace; }
   .dtag.practice { background: rgba(0,212,170,0.12); color: var(--accent); }
   .dtag.theory { background: rgba(91,141,238,0.12); color: var(--accent2); }
   .dtag.project { background: rgba(245,166,35,0.12); color: var(--warn); }
 
+  .day-expand-icon { color: var(--muted); font-size: 10px; margin-top: 4px; transition: transform 0.2s; flex-shrink: 0; }
+  .day-item.qs-open .day-expand-icon { transform: rotate(180deg); }
   .day-item.completed .day-title { text-decoration: line-through; color: var(--muted); }
 
-  .resources {
-    padding: 14px 20px;
-    border-top: 1px solid var(--border);
-    background: rgba(0,212,170,0.03);
+  /* Questions panel */
+  .questions-panel { display: none; border-top: 1px solid var(--border); background: rgba(0,0,0,0.2); }
+  .day-item.qs-open .questions-panel { display: block; }
+
+  .diff-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); }
+  .diff-tab {
+    flex: 1; padding: 10px 8px; font-size: 12px; font-family: 'IBM Plex Mono', monospace;
+    cursor: pointer; border: none; background: transparent; color: var(--muted);
+    transition: all 0.15s; border-bottom: 2px solid transparent; margin-bottom: -1px;
   }
+  .diff-tab:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+  .diff-tab.active-easy { color: var(--easy); border-bottom-color: var(--easy); background: rgba(34,197,94,0.05); }
+  .diff-tab.active-medium { color: var(--medium); border-bottom-color: var(--medium); background: rgba(245,166,35,0.05); }
+  .diff-tab.active-hard { color: var(--hard); border-bottom-color: var(--hard); background: rgba(239,68,68,0.05); }
 
-  .res-title { font-size: 11px; color: var(--accent); margin-bottom: 8px; font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.1em; }
+  .qs-content { display: none; padding: 14px 16px; }
+  .qs-content.active { display: block; }
 
-  .res-list { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+  .q-loading { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 13px; padding: 8px 0; }
+  .spinner { width: 15px; height: 15px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
+  @keyframes spin { to { transform: rotate(360deg); } }
 
-  .res-list li { font-size: 12px; color: var(--muted); padding-left: 12px; position: relative; }
+  .q-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .q-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; position: relative; border-left: 3px solid transparent;
+  }
+  .q-card.easy { border-left-color: var(--easy); }
+  .q-card.medium { border-left-color: var(--medium); }
+  .q-card.hard { border-left-color: var(--hard); }
+
+  .q-num { font-family: 'IBM Plex Mono', monospace; font-size: 10px; margin-bottom: 5px; }
+  .q-num.easy { color: var(--easy); }
+  .q-num.medium { color: var(--medium); }
+  .q-num.hard { color: var(--hard); }
+
+  .q-text { color: var(--text); font-size: 13px; line-height: 1.65; margin-bottom: 6px; }
+
+  .q-tables { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 6px; }
+  .q-table-tag { font-size: 10px; font-family: 'IBM Plex Mono', monospace; background: rgba(91,141,238,0.12); color: var(--accent2); padding: 2px 7px; border-radius: 4px; }
+
+  .q-hint { font-size: 11px; color: var(--muted); font-style: italic; border-top: 1px solid var(--border); padding-top: 6px; margin-top: 2px; }
+
+  .q-error { color: var(--hard); font-size: 13px; padding: 12px; background: rgba(239,68,68,0.08); border-radius: 8px; border: 1px solid rgba(239,68,68,0.2); }
+
+  .retry-btn { margin-top: 10px; padding: 6px 14px; background: transparent; border: 1px solid var(--border); border-radius: 6px; color: var(--muted); font-size: 12px; cursor: pointer; }
+  .retry-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .diff-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-family: 'IBM Plex Mono', monospace; padding: 2px 7px; border-radius: 4px; margin-bottom: 10px; }
+  .diff-badge.easy { background: rgba(34,197,94,0.12); color: var(--easy); }
+  .diff-badge.medium { background: rgba(245,166,35,0.12); color: var(--medium); }
+  .diff-badge.hard { background: rgba(239,68,68,0.12); color: var(--hard); }
+
+  .resources { padding: 11px 16px; border-top: 1px solid var(--border); background: rgba(0,212,170,0.03); }
+  .res-title { font-size: 10px; color: var(--accent); margin-bottom: 5px; font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.1em; }
+  .res-list { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+  .res-list li { font-size: 11px; color: var(--muted); padding-left: 12px; position: relative; }
   .res-list li::before { content: '→'; position: absolute; left: 0; color: var(--accent); }
 
-  footer {
-    max-width: 740px;
-    margin: 32px auto 0;
-    text-align: center;
-    font-size: 11px;
-    color: var(--muted);
-    font-family: 'IBM Plex Mono', monospace;
-  }
+  footer { max-width: 780px; margin: 24px auto 0; text-align: center; font-size: 11px; color: var(--muted); font-family: 'IBM Plex Mono', monospace; }
 </style>
 </head>
 <body>
@@ -252,13 +160,22 @@
 <header>
   <div class="tag">// study plan</div>
   <h1>SQL Server <span>Mastery</span></h1>
-  <p class="subtitle">A structured 8-week plan · 1 hour per day · Intermediate to Advanced</p>
+  <p class="subtitle">8-week plan · 1 hour/day · Click any day for AI-generated practice questions</p>
   <div class="meta-row">
     <div class="meta-chip">⏱ <strong>1 hr / day</strong></div>
-    <div class="meta-chip">📅 <strong>8 weeks</strong> · ~56 hours total</div>
-    <div class="meta-chip">🎯 Starting from <strong>basic SQL</strong></div>
+    <div class="meta-chip">📅 <strong>8 weeks · 40 days</strong></div>
+    <div class="meta-chip">🤖 <strong>AI questions</strong></div>
+    <div class="meta-chip">🗄️ <strong>AdventureWorksLT2022</strong></div>
   </div>
 </header>
+
+<div class="db-banner">
+  <div class="db-icon">🗄️</div>
+  <div class="db-info">
+    <div class="db-title">AdventureWorksLT2022 Database</div>
+    <div class="db-desc">All questions use real tables: <code style="color:var(--accent2)">SalesLT.Customer</code> · <code style="color:var(--accent2)">SalesLT.Product</code> · <code style="color:var(--accent2)">SalesLT.SalesOrderHeader</code> · <code style="color:var(--accent2)">SalesLT.SalesOrderDetail</code> · <code style="color:var(--accent2)">SalesLT.Address</code> · <code style="color:var(--accent2)">SalesLT.ProductCategory</code> and more.</div>
+  </div>
+</div>
 
 <div class="progress-wrap">
   <div class="progress-label">Overall progress <span id="prog-text">0 / 40 days</span></div>
@@ -266,111 +183,223 @@
 </div>
 
 <div class="container" id="plan"></div>
-
-<footer>Check off each day as you complete it — progress saves automatically.</footer>
+<footer>Click a day row → tabs for 🟢 Easy · 🟡 Medium · 🔴 Hard · 5 questions each · Progress auto-saves</footer>
 
 <script>
+// AdventureWorksLT2022 schema context passed to the AI
+const AW_SCHEMA = `AdventureWorksLT2022 database schema (use SalesLT schema prefix):
+
+Tables and key columns:
+- SalesLT.Customer: CustomerID, NameStyle, Title, FirstName, MiddleName, LastName, Suffix, CompanyName, SalesPerson, EmailAddress, Phone, PasswordHash, PasswordSalt, rowguid, ModifiedDate
+- SalesLT.Address: AddressID, AddressLine1, AddressLine2, City, StateProvince, CountryRegion, PostalCode, rowguid, ModifiedDate
+- SalesLT.CustomerAddress: CustomerID, AddressID, AddressType, rowguid, ModifiedDate
+- SalesLT.Product: ProductID, Name, ProductNumber, Color, StandardCost, ListPrice, Size, Weight, ProductCategoryID, ProductModelID, SellStartDate, SellEndDate, DiscontinuedDate, ThumbNailPhoto, ThumbnailPhotoFileName, rowguid, ModifiedDate
+- SalesLT.ProductCategory: ProductCategoryID, ParentProductCategoryID, Name, rowguid, ModifiedDate
+- SalesLT.ProductModel: ProductModelID, Name, CatalogDescription, rowguid, ModifiedDate
+- SalesLT.ProductModelProductDescription: ProductModelID, ProductDescriptionID, Culture, rowguid, ModifiedDate
+- SalesLT.ProductDescription: ProductDescriptionID, Description, rowguid, ModifiedDate
+- SalesLT.SalesOrderHeader: SalesOrderID, RevisionNumber, OrderDate, DueDate, ShipDate, Status, OnlineOrderFlag, SalesOrderNumber, PurchaseOrderNumber, AccountNumber, CustomerID, ShipToAddressID, BillToAddressID, ShipMethod, CreditCardApprovalCode, SubTotal, TaxAmt, Freight, TotalDue, Comment, rowguid, ModifiedDate
+- SalesLT.SalesOrderDetail: SalesOrderID, SalesOrderDetailID, OrderQty, ProductID, UnitPrice, UnitPriceDiscount, LineTotal, rowguid, ModifiedDate`;
+
 const phases = [
   {
-    num: "01",
-    title: "Solidifying the Foundations",
-    duration: "Week 1–2 · 10 days",
-    resources: ["Microsoft SQL Server Documentation (docs.microsoft.com)", "SQLZoo.net — free interactive exercises", "W3Schools SQL — quick reference"],
-    days: [
-      { label: "Day 1", title: "SELECT deep dive", desc: "Revisit SELECT with column aliases, DISTINCT, TOP n. Practice on AdventureWorks sample DB.", tags: ["practice","theory"] },
-      { label: "Day 2", title: "WHERE & filtering", desc: "AND/OR/NOT, BETWEEN, IN, LIKE, NULL checks. Write 10 filter queries.", tags: ["practice"] },
-      { label: "Day 3", title: "ORDER BY & sorting", desc: "Single & multi-column sorts, ASC/DESC, NULL ordering behavior in SQL Server.", tags: ["practice"] },
-      { label: "Day 4", title: "Aggregate functions", desc: "COUNT, SUM, AVG, MIN, MAX. Understand when NULLs are ignored. GROUP BY basics.", tags: ["theory","practice"] },
-      { label: "Day 5", title: "GROUP BY & HAVING", desc: "Difference between WHERE and HAVING. Grouping by multiple columns. Common pitfalls.", tags: ["practice"] },
-      { label: "Day 6", title: "JOINs — INNER & LEFT", desc: "Master INNER JOIN and LEFT JOIN with visual diagrams. Practice 10 join queries.", tags: ["practice","theory"] },
-      { label: "Day 7", title: "JOINs — RIGHT, FULL, CROSS", desc: "RIGHT JOIN, FULL OUTER JOIN, CROSS JOIN. When to use each. Self-joins intro.", tags: ["theory","practice"] },
-      { label: "Day 8", title: "Subqueries", desc: "Scalar, correlated, and table subqueries. EXISTS vs IN performance difference.", tags: ["theory","practice"] },
-      { label: "Day 9", title: "String & date functions", desc: "LEN, SUBSTRING, CHARINDEX, UPPER, LOWER, GETDATE, DATEADD, DATEDIFF, FORMAT.", tags: ["practice"] },
-      { label: "Day 10", title: "Week 1–2 mini project", desc: "Query a sample DB (AdventureWorks) to answer 5 business questions using everything learned.", tags: ["project"] },
+    num:"01", title:"Solidifying the Foundations", duration:"Week 1–2 · 10 days",
+    resources:["Microsoft SQL Server Docs (docs.microsoft.com)","SQLZoo.net — free interactive exercises","W3Schools SQL — quick reference"],
+    days:[
+      {label:"Day 1",  title:"SELECT deep dive",         desc:"SELECT with column aliases, DISTINCT, TOP n. Practice on Customer and Product tables.", tags:["practice","theory"]},
+      {label:"Day 2",  title:"WHERE & filtering",         desc:"AND/OR/NOT, BETWEEN, IN, LIKE, NULL checks on Customer, Product, SalesOrderHeader.", tags:["practice"]},
+      {label:"Day 3",  title:"ORDER BY & sorting",        desc:"Single & multi-column sorts, ASC/DESC, NULL ordering on Product and Customer.", tags:["practice"]},
+      {label:"Day 4",  title:"Aggregate functions",       desc:"COUNT, SUM, AVG, MIN, MAX on SalesOrderDetail and SalesOrderHeader.", tags:["theory","practice"]},
+      {label:"Day 5",  title:"GROUP BY & HAVING",         desc:"GROUP BY on SalesOrderHeader, ProductCategory. HAVING for filtered aggregates.", tags:["practice"]},
+      {label:"Day 6",  title:"JOINs — INNER & LEFT",      desc:"Join Customer with SalesOrderHeader, Product with ProductCategory.", tags:["practice","theory"]},
+      {label:"Day 7",  title:"JOINs — RIGHT, FULL, CROSS",desc:"RIGHT JOIN, FULL OUTER JOIN, CROSS JOIN across SalesLT tables. Self-joins.", tags:["theory","practice"]},
+      {label:"Day 8",  title:"Subqueries",                desc:"Scalar, correlated, table subqueries. EXISTS vs IN on Orders and Products.", tags:["theory","practice"]},
+      {label:"Day 9",  title:"String & date functions",   desc:"LEN, SUBSTRING, CHARINDEX on Customer names. DATEADD, DATEDIFF on OrderDate.", tags:["practice"]},
+      {label:"Day 10", title:"Week 1–2 mini project",     desc:"Answer 5 business questions: top customers, bestselling products, revenue by region.", tags:["project"]},
     ]
   },
   {
-    num: "02",
-    title: "Intermediate SQL Techniques",
-    duration: "Week 3–4 · 10 days",
-    resources: ["Use Cases on LeetCode SQL — free tier", "SQLServerTutorial.net — structured lessons", "Brent Ozar's blog — practical SQL Server tips"],
-    days: [
-      { label: "Day 11", title: "CTEs (Common Table Expressions)", desc: "WITH clause, readable query restructuring, recursive CTEs intro.", tags: ["theory","practice"] },
-      { label: "Day 12", title: "Window functions — basics", desc: "ROW_NUMBER(), RANK(), DENSE_RANK(). OVER() and PARTITION BY clause.", tags: ["theory","practice"] },
-      { label: "Day 13", title: "Window functions — advanced", desc: "LAG(), LEAD(), FIRST_VALUE(), LAST_VALUE(), running totals with SUM() OVER.", tags: ["practice"] },
-      { label: "Day 14", title: "CASE expressions", desc: "Simple and searched CASE. Using CASE in SELECT, WHERE, ORDER BY, and GROUP BY.", tags: ["practice"] },
-      { label: "Day 15", title: "UNION, INTERSECT, EXCEPT", desc: "Set operators, UNION vs UNION ALL performance. Practical use cases.", tags: ["theory","practice"] },
-      { label: "Day 16", title: "NULL handling", desc: "ISNULL, COALESCE, NULLIF, IS NULL vs =NULL. NULL in aggregates and joins.", tags: ["theory","practice"] },
-      { label: "Day 17", title: "INSERT, UPDATE, DELETE", desc: "DML statements, output clause, batch updates, safe delete patterns.", tags: ["practice"] },
-      { label: "Day 18", title: "Transactions & error handling", desc: "BEGIN/COMMIT/ROLLBACK, TRY…CATCH, @@ERROR, XACT_STATE.", tags: ["theory","practice"] },
-      { label: "Day 19", title: "Views", desc: "Creating/altering views, indexed views intro, when to use views vs CTEs.", tags: ["theory","practice"] },
-      { label: "Day 20", title: "Week 3–4 project", desc: "Build a reporting query set: sales summary, ranking top customers, month-over-month comparison.", tags: ["project"] },
+    num:"02", title:"Intermediate SQL Techniques", duration:"Week 3–4 · 10 days",
+    resources:["LeetCode SQL — free tier","SQLServerTutorial.net","Brent Ozar's blog"],
+    days:[
+      {label:"Day 11", title:"CTEs",                       desc:"WITH clause to simplify multi-step queries on SalesOrderHeader and Customer.", tags:["theory","practice"]},
+      {label:"Day 12", title:"Window functions — basics",   desc:"ROW_NUMBER(), RANK(), DENSE_RANK() on SalesOrderDetail and Product prices.", tags:["theory","practice"]},
+      {label:"Day 13", title:"Window functions — advanced", desc:"LAG(), LEAD(), running totals with SUM() OVER on monthly sales data.", tags:["practice"]},
+      {label:"Day 14", title:"CASE expressions",            desc:"Categorize products by price range, label order status using CASE.", tags:["practice"]},
+      {label:"Day 15", title:"UNION, INTERSECT, EXCEPT",    desc:"Combine results from Address, Customer across set operators.", tags:["theory","practice"]},
+      {label:"Day 16", title:"NULL handling",               desc:"ISNULL, COALESCE, NULLIF on MiddleName, Color, Size columns.", tags:["theory","practice"]},
+      {label:"Day 17", title:"INSERT, UPDATE, DELETE",      desc:"Modify Customer, Product data safely. Use OUTPUT clause.", tags:["practice"]},
+      {label:"Day 18", title:"Transactions & error handling",desc:"BEGIN/COMMIT/ROLLBACK, TRY…CATCH on order insert scenarios.", tags:["theory","practice"]},
+      {label:"Day 19", title:"Views",                       desc:"Create views over SalesOrderHeader + Customer. Indexed views intro.", tags:["theory","practice"]},
+      {label:"Day 20", title:"Week 3–4 project",            desc:"Month-over-month sales report, customer ranking, product performance view.", tags:["project"]},
     ]
   },
   {
-    num: "03",
-    title: "Performance & Query Optimization",
-    duration: "Week 5–6 · 10 days",
-    resources: ["Brent Ozar's sp_BlitzIndex & sp_Blitz (free tools)", "SQL Server Execution Plans by Grant Fritchey (free PDF)", "SQLSkills.com — index internals articles"],
-    days: [
-      { label: "Day 21", title: "How SQL Server executes queries", desc: "Parse → Compile → Optimize → Execute cycle. Statistics and cardinality.", tags: ["theory"] },
-      { label: "Day 22", title: "Reading execution plans", desc: "Actual vs estimated plans in SSMS. Key operators: Seek, Scan, Hash Join, Nested Loop.", tags: ["theory","practice"] },
-      { label: "Day 23", title: "Index fundamentals", desc: "Clustered vs non-clustered indexes. Heap tables. Index structure (B-tree).", tags: ["theory"] },
-      { label: "Day 24", title: "Creating & tuning indexes", desc: "Included columns, covering indexes, index key column order. Finding missing indexes.", tags: ["practice"] },
-      { label: "Day 25", title: "Index maintenance", desc: "Fragmentation, REBUILD vs REORGANIZE, fill factor, index usage stats DMVs.", tags: ["theory","practice"] },
-      { label: "Day 26", title: "Query tuning techniques", desc: "Avoid SELECT *, SARGability, implicit conversions, parameter sniffing basics.", tags: ["practice","theory"] },
-      { label: "Day 27", title: "Temp tables vs table variables vs CTEs", desc: "When to use each for performance. Spills, statistics, scope differences.", tags: ["theory","practice"] },
-      { label: "Day 28", title: "Statistics & cardinality", desc: "What statistics are, how to update them, auto-update settings, cardinality estimator.", tags: ["theory"] },
-      { label: "Day 29", title: "DMVs for performance monitoring", desc: "sys.dm_exec_query_stats, sys.dm_os_wait_stats, sys.dm_exec_requests.", tags: ["practice"] },
-      { label: "Day 30", title: "Optimization project", desc: "Take 3 slow queries, read their execution plans, add indexes, and measure improvement.", tags: ["project"] },
+    num:"03", title:"Performance & Query Optimization", duration:"Week 5–6 · 10 days",
+    resources:["Brent Ozar's sp_BlitzIndex (free)","SQL Server Execution Plans — Grant Fritchey (free PDF)","SQLSkills.com"],
+    days:[
+      {label:"Day 21", title:"How SQL Server executes queries", desc:"Parse → Compile → Optimize → Execute on AdventureWorks queries.", tags:["theory"]},
+      {label:"Day 22", title:"Reading execution plans",         desc:"Actual vs estimated plans for SalesOrderHeader joins and Product seeks.", tags:["theory","practice"]},
+      {label:"Day 23", title:"Index fundamentals",              desc:"Clustered vs non-clustered on SalesLT tables. Heap vs B-tree.", tags:["theory"]},
+      {label:"Day 24", title:"Creating & tuning indexes",       desc:"Covering indexes on SalesOrderDetail. Missing index recommendations.", tags:["practice"]},
+      {label:"Day 25", title:"Index maintenance",               desc:"Fragmentation on SalesLT indexes. REBUILD vs REORGANIZE decisions.", tags:["theory","practice"]},
+      {label:"Day 26", title:"Query tuning techniques",         desc:"SARGability on OrderDate, CustomerID. Avoid implicit conversions.", tags:["practice","theory"]},
+      {label:"Day 27", title:"Temp tables vs table variables vs CTEs", desc:"Performance comparison using SalesOrderHeader aggregations.", tags:["theory","practice"]},
+      {label:"Day 28", title:"Statistics & cardinality",        desc:"Statistics on Product, SalesOrderDetail. Cardinality estimator behavior.", tags:["theory"]},
+      {label:"Day 29", title:"DMVs for performance monitoring", desc:"sys.dm_exec_query_stats for top queries on AdventureWorks.", tags:["practice"]},
+      {label:"Day 30", title:"Optimization project",            desc:"Find 3 slow queries in AdventureWorks, analyze and optimize each.", tags:["project"]},
     ]
   },
   {
-    num: "04",
-    title: "Advanced Topics & Real-World Skills",
-    duration: "Week 7–8 · 10 days",
-    resources: ["Microsoft Learn — SQL Server Advanced path (free)", "Itzik Ben-Gan T-SQL Fundamentals (book, highly recommended)", "Stack Overflow Data Explorer — practice on real data"],
-    days: [
-      { label: "Day 31", title: "Stored procedures", desc: "Parameters (in/out), recompile hints, error handling inside SPs, best practices.", tags: ["theory","practice"] },
-      { label: "Day 32", title: "User-defined functions", desc: "Scalar vs table-valued functions. Performance implications of scalar UDFs.", tags: ["theory","practice"] },
-      { label: "Day 33", title: "Triggers", desc: "AFTER vs INSTEAD OF triggers, inserted/deleted tables, avoiding common trigger pitfalls.", tags: ["theory","practice"] },
-      { label: "Day 34", title: "Dynamic SQL", desc: "sp_executesql, SQL injection risks, parameterization, when dynamic SQL is justified.", tags: ["theory","practice"] },
-      { label: "Day 35", title: "JSON & XML in SQL Server", desc: "FOR JSON, OPENJSON, FOR XML, reading nested structures. Modern data exchange patterns.", tags: ["practice"] },
-      { label: "Day 36", title: "Partitioning & large tables", desc: "Table partitioning concepts, partition switching, managing billions of rows.", tags: ["theory"] },
-      { label: "Day 37", title: "Security fundamentals", desc: "Schemas, logins vs users, GRANT/DENY/REVOKE, row-level security intro.", tags: ["theory","practice"] },
-      { label: "Day 38", title: "Backup, restore & HA basics", desc: "Full/diff/log backups, recovery models, Always On AG overview, RTO/RPO concepts.", tags: ["theory"] },
-      { label: "Day 39", title: "SQL Server Agent & automation", desc: "Jobs, schedules, alerts. Automating index maintenance and statistics updates.", tags: ["practice"] },
-      { label: "Day 40", title: "Capstone project", desc: "Design a small schema, write stored procedures, add indexes, implement error handling, and document your work.", tags: ["project"] },
+    num:"04", title:"Advanced Topics & Real-World Skills", duration:"Week 7–8 · 10 days",
+    resources:["Microsoft Learn — SQL Server Advanced (free)","Itzik Ben-Gan T-SQL Fundamentals (book)","Stack Overflow Data Explorer"],
+    days:[
+      {label:"Day 31", title:"Stored procedures",          desc:"SPs for order processing, customer lookup using AdventureWorks tables.", tags:["theory","practice"]},
+      {label:"Day 32", title:"User-defined functions",     desc:"TVFs for product search, scalar UDF for discount calculation.", tags:["theory","practice"]},
+      {label:"Day 33", title:"Triggers",                   desc:"AFTER INSERT trigger on SalesOrderHeader to log changes.", tags:["theory","practice"]},
+      {label:"Day 34", title:"Dynamic SQL",                desc:"Dynamic search SP for Product with optional filters using sp_executesql.", tags:["theory","practice"]},
+      {label:"Day 35", title:"JSON & XML in SQL Server",   desc:"FOR JSON from SalesOrderHeader + Detail. Parse XML product catalog.", tags:["practice"]},
+      {label:"Day 36", title:"Partitioning & large tables", desc:"Partition SalesOrderHeader by OrderDate year. Switching strategy.", tags:["theory"]},
+      {label:"Day 37", title:"Security fundamentals",      desc:"Schema permissions on SalesLT. Row-level security for SalesPerson.", tags:["theory","practice"]},
+      {label:"Day 38", title:"Backup, restore & HA basics", desc:"Backup AdventureWorks. Recovery models, Always On overview.", tags:["theory"]},
+      {label:"Day 39", title:"SQL Server Agent & automation", desc:"Automate index rebuild job for SalesLT tables nightly.", tags:["practice"]},
+      {label:"Day 40", title:"Capstone project",           desc:"Full solution: schema, SPs, indexes, error handling, security on AdventureWorks.", tags:["project"]},
     ]
   }
 ];
 
-const STORAGE_KEY = 'sql_plan_v1';
+const STORAGE_KEY = 'sql_aw_v1';
+let checked = {};
+try { checked = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch {}
+let qCache = {};
 
-function loadChecked() {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch { return {}; }
+function saveChecked() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(checked)); } catch {}
 }
-
-function saveChecked(obj) {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(obj)); } catch {}
-}
-
-let checked = loadChecked();
-
-function totalDays() { return phases.reduce((a,p) => a + p.days.length, 0); }
-function countChecked() { return Object.values(checked).filter(Boolean).length; }
 
 function updateProgress() {
-  const total = totalDays();
-  const done = countChecked();
-  const pct = Math.round(done / total * 100);
+  const total = phases.reduce((a,p) => a + p.days.length, 0);
+  const done = Object.values(checked).filter(Boolean).length;
   document.getElementById('prog-text').textContent = `${done} / ${total} days`;
-  document.getElementById('prog-bar').style.width = pct + '%';
+  document.getElementById('prog-bar').style.width = Math.round(done/total*100) + '%';
 }
 
-function tagHTML(tag) {
-  return `<span class="dtag ${tag}">${tag}</span>`;
+async function fetchQuestions(dayTitle, dayDesc, difficulty) {
+  const diffGuide = {
+    easy:   'beginner-friendly, testing basic SQL syntax and single-table queries. Students know SQL basics.',
+    medium: 'intermediate, requiring JOINs across multiple tables, aggregations, or subqueries together.',
+    hard:   'advanced, involving complex multi-table joins, window functions, CTEs, performance thinking, or tricky edge cases.'
+  };
+
+  const prompt = `You are a SQL Server trainer using AdventureWorksLT2022.
+
+${AW_SCHEMA}
+
+Generate exactly 5 ${difficulty.toUpperCase()} practice questions for today's topic:
+Topic: "${dayTitle}"
+Description: "${dayDesc}"
+Difficulty: ${diffGuide[difficulty]}
+
+IMPORTANT RULES:
+- Every question MUST use real AdventureWorksLT2022 tables with SalesLT. prefix
+- Questions must be practical and directly test the topic
+- Easy: single table or simple syntax
+- Medium: multi-table joins + aggregation
+- Hard: window functions / CTEs / performance / complex logic
+- tables field: list only the SalesLT tables used (without schema prefix, e.g. "Customer", "Product")
+
+Return ONLY a valid JSON array, no markdown, no extra text:
+[
+  {
+    "q": "Full question text here",
+    "tables": ["TableName1", "TableName2"],
+    "hint": "Short hint — max 12 words"
+  }
+]`;
+
+  const response = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: "claude-sonnet-4-6",
+      max_tokens: 1500,
+      messages: [{ role: "user", content: prompt }]
+    })
+  });
+
+  if (!response.ok) throw new Error('API error ' + response.status);
+  const data = await response.json();
+  const text = data.content.map(i => i.text || '').join('');
+  const clean = text.replace(/```json|```/g, '').trim();
+  const parsed = JSON.parse(clean);
+  if (!Array.isArray(parsed) || parsed.length < 5) throw new Error('Invalid response');
+  return parsed;
 }
+
+function renderQuestions(questions, difficulty) {
+  return `
+    <div class="diff-badge ${difficulty}">${
+      difficulty === 'easy' ? '🟢 Easy — 5 Questions' :
+      difficulty === 'medium' ? '🟡 Medium — 5 Questions' :
+      '🔴 Hard — 5 Questions'
+    }</div>
+    <ul class="q-list">
+      ${questions.map((q, i) => `
+        <li class="q-card ${difficulty}">
+          <div class="q-num ${difficulty}">Q${i+1} · AdventureWorksLT2022</div>
+          <div class="q-text">${q.q}</div>
+          ${q.tables && q.tables.length ? `
+            <div class="q-tables">${q.tables.map(t => `<span class="q-table-tag">SalesLT.${t}</span>`).join('')}</div>
+          ` : ''}
+          <div class="q-hint">💡 ${q.hint}</div>
+        </li>
+      `).join('')}
+    </ul>`;
+}
+
+async function showQuestions(panel, dayTitle, dayDesc, difficulty, tabEl) {
+  const cacheKey = `${dayTitle}__${difficulty}`;
+
+  // Update tabs
+  panel.querySelectorAll('.diff-tab').forEach(t => {
+    t.className = 'diff-tab';
+  });
+  tabEl.className = `diff-tab active-${difficulty}`;
+
+  // Show panel
+  panel.querySelectorAll('.qs-content').forEach(c => c.classList.remove('active'));
+  const contentDiv = panel.querySelector(`.qs-content[data-diff="${difficulty}"]`);
+  contentDiv.classList.add('active');
+
+  if (qCache[cacheKey]) return; // already loaded
+
+  contentDiv.innerHTML = `<div class="q-loading"><div class="spinner"></div> Generating ${difficulty} questions using AdventureWorksLT2022...</div>`;
+
+  try {
+    const questions = await fetchQuestions(dayTitle, dayDesc, difficulty);
+    qCache[cacheKey] = questions;
+    contentDiv.innerHTML = renderQuestions(questions, difficulty);
+  } catch (e) {
+    contentDiv.innerHTML = `
+      <div class="q-error">⚠ Could not generate questions. Please try again.</div>
+      <button class="retry-btn" onclick="retryLoad(this, '${dayTitle.replace(/'/g,"\\'")}', '${dayDesc.replace(/'/g,"\\'")}', '${difficulty}')">↺ Retry</button>`;
+  }
+}
+
+window.retryLoad = async function(btn, dayTitle, dayDesc, difficulty) {
+  const contentDiv = btn.closest('.qs-content');
+  const cacheKey = `${dayTitle}__${difficulty}`;
+  contentDiv.innerHTML = `<div class="q-loading"><div class="spinner"></div> Retrying...</div>`;
+  try {
+    const questions = await fetchQuestions(dayTitle, dayDesc, difficulty);
+    qCache[cacheKey] = questions;
+    contentDiv.innerHTML = renderQuestions(questions, difficulty);
+  } catch(e) {
+    contentDiv.innerHTML = `
+      <div class="q-error">⚠ Still failing. Check your connection.</div>
+      <button class="retry-btn" onclick="retryLoad(this, '${dayTitle.replace(/'/g,"\\'")}', '${dayDesc.replace(/'/g,"\\'")}', '${difficulty}')">↺ Retry</button>`;
+  }
+};
 
 function render() {
   const container = document.getElementById('plan');
@@ -386,11 +415,8 @@ function render() {
       <span class="phase-num">${phase.num}</span>
       <span class="phase-title">${phase.title}</span>
       <span class="phase-duration">${phase.duration}</span>
-      <span class="chevron">▼</span>
-    `;
-    header.addEventListener('click', () => {
-      div.classList.toggle('open');
-    });
+      <span class="chevron">▼</span>`;
+    header.addEventListener('click', () => div.classList.toggle('open'));
     div.appendChild(header);
 
     const body = document.createElement('div');
@@ -404,35 +430,61 @@ function render() {
       item.className = 'day-item' + (isChecked ? ' completed' : '');
 
       item.innerHTML = `
-        <div class="day-check ${isChecked ? 'checked' : ''}" data-key="${key}">
-          ${isChecked ? '✓' : ''}
+        <div class="day-row">
+          <div class="day-check ${isChecked ? 'checked' : ''}">${isChecked ? '✓' : ''}</div>
+          <span class="day-label">${day.label}</span>
+          <div class="day-content">
+            <div class="day-title">${day.title}</div>
+            <div class="day-desc">${day.desc}</div>
+            <div class="day-tags">${day.tags.map(t => `<span class="dtag ${t}">${t}</span>`).join('')}</div>
+          </div>
+          <span class="day-expand-icon">▼</span>
         </div>
-        <span class="day-label">${day.label}</span>
-        <div class="day-content">
-          <div class="day-title">${day.title}</div>
-          <div class="day-desc">${day.desc}</div>
-          <div class="day-tags">${day.tags.map(tagHTML).join('')}</div>
-        </div>
-      `;
+        <div class="questions-panel">
+          <div class="diff-tabs">
+            <button class="diff-tab" data-diff="easy">🟢 Easy (5)</button>
+            <button class="diff-tab" data-diff="medium">🟡 Medium (5)</button>
+            <button class="diff-tab" data-diff="hard">🔴 Hard (5)</button>
+          </div>
+          <div class="qs-content" data-diff="easy"></div>
+          <div class="qs-content" data-diff="medium"></div>
+          <div class="qs-content" data-diff="hard"></div>
+        </div>`;
 
       const checkEl = item.querySelector('.day-check');
-      checkEl.addEventListener('click', () => {
+      const row = item.querySelector('.day-row');
+      const panel = item.querySelector('.questions-panel');
+
+      checkEl.addEventListener('click', (e) => {
+        e.stopPropagation();
         checked[key] = !checked[key];
-        saveChecked(checked);
+        saveChecked();
         render();
         updateProgress();
+      });
+
+      row.addEventListener('click', (e) => {
+        if (e.target === checkEl || checkEl.contains(e.target)) return;
+        const isOpen = item.classList.toggle('qs-open');
+        if (isOpen) {
+          const easyTab = panel.querySelector('.diff-tab[data-diff="easy"]');
+          showQuestions(panel, day.title, day.desc, 'easy', easyTab);
+        }
+      });
+
+      panel.querySelectorAll('.diff-tab').forEach(tab => {
+        tab.addEventListener('click', (e) => {
+          e.stopPropagation();
+          showQuestions(panel, day.title, day.desc, tab.dataset.diff, tab);
+        });
       });
 
       body.appendChild(item);
     });
 
-    // Resources
     const res = document.createElement('div');
     res.className = 'resources';
-    res.innerHTML = `
-      <div class="res-title">// recommended resources</div>
-      <ul class="res-list">${phase.resources.map(r => `<li>${r}</li>`).join('')}</ul>
-    `;
+    res.innerHTML = `<div class="res-title">// resources</div><ul class="res-list">${phase.resources.map(r=>`<li>${r}</li>`).join('')}</ul>`;
     body.appendChild(res);
 
     div.appendChild(body);
