@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SQL Server Study Plan</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;700&display=swap');
+
+  :root {
+    --bg: #0e1117;
+    --surface: #161b27;
+    --card: #1e2535;
+    --border: #2a3347;
+    --accent: #00d4aa;
+    --accent2: #5b8dee;
+    --warn: #f5a623;
+    --text: #e2e8f0;
+    --muted: #8892a4;
+    --done: #22c55e;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', sans-serif;
+    min-height: 100vh;
+    padding: 24px 16px 48px;
+  }
+
+  header {
+    max-width: 740px;
+    margin: 0 auto 36px;
+  }
+
+  .tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  h1 {
+    font-size: clamp(26px, 5vw, 38px);
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 10px;
+  }
+
+  h1 span { color: var(--accent); }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 300;
+  }
+
+  .meta-row {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+
+  .meta-chip {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 14px;
+    font-size: 12px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .meta-chip strong { color: var(--text); }
+
+  /* Progress bar */
+  .progress-wrap {
+    max-width: 740px;
+    margin: 0 auto 32px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+  }
+
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+
+  .progress-label span { color: var(--accent); font-family: 'IBM Plex Mono', monospace; }
+
+  .bar-bg {
+    background: var(--border);
+    border-radius: 99px;
+    height: 6px;
+    overflow: hidden;
+  }
+
+  .bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 99px;
+    transition: width 0.5s ease;
+  }
+
+  /* Phases */
+  .container { max-width: 740px; margin: 0 auto; }
+
+  .phase {
+    margin-bottom: 28px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .phase-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 20px;
+    background: var(--surface);
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .phase-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    min-width: 28px;
+  }
+
+  .phase-title { font-weight: 600; font-size: 15px; flex: 1; }
+
+  .phase-duration {
+    font-size: 11px;
+    color: var(--muted);
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  .chevron {
+    color: var(--muted);
+    font-size: 12px;
+    transition: transform 0.2s;
+  }
+
+  .phase.open .chevron { transform: rotate(180deg); }
+
+  .phase-body { display: none; }
+  .phase.open .phase-body { display: block; }
+
+  .day-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 14px 20px;
+    border-top: 1px solid var(--border);
+    transition: background 0.15s;
+  }
+
+  .day-item:hover { background: rgba(255,255,255,0.02); }
+
+  .day-check {
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--border);
+    border-radius: 4px;
+    cursor: pointer;
+    flex-shrink: 0;
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    font-size: 11px;
+  }
+
+  .day-check.checked {
+    background: var(--done);
+    border-color: var(--done);
+    color: #fff;
+  }
+
+  .day-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--accent2);
+    min-width: 52px;
+    margin-top: 3px;
+  }
+
+  .day-content { flex: 1; }
+  .day-title { font-size: 14px; font-weight: 500; margin-bottom: 4px; }
+  .day-desc { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+  .day-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 6px;
+  }
+
+  .dtag {
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  .dtag.practice { background: rgba(0,212,170,0.12); color: var(--accent); }
+  .dtag.theory { background: rgba(91,141,238,0.12); color: var(--accent2); }
+  .dtag.project { background: rgba(245,166,35,0.12); color: var(--warn); }
+
+  .day-item.completed .day-title { text-decoration: line-through; color: var(--muted); }
+
+  .resources {
+    padding: 14px 20px;
+    border-top: 1px solid var(--border);
+    background: rgba(0,212,170,0.03);
+  }
+
+  .res-title { font-size: 11px; color: var(--accent); margin-bottom: 8px; font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.1em; }
+
+  .res-list { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+
+  .res-list li { font-size: 12px; color: var(--muted); padding-left: 12px; position: relative; }
+  .res-list li::before { content: '→'; position: absolute; left: 0; color: var(--accent); }
+
+  footer {
+    max-width: 740px;
+    margin: 32px auto 0;
+    text-align: center;
+    font-size: 11px;
+    color: var(--muted);
+    font-family: 'IBM Plex Mono', monospace;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="tag">// study plan</div>
+  <h1>SQL Server <span>Mastery</span></h1>
+  <p class="subtitle">A structured 8-week plan · 1 hour per day · Intermediate to Advanced</p>
+  <div class="meta-row">
+    <div class="meta-chip">⏱ <strong>1 hr / day</strong></div>
+    <div class="meta-chip">📅 <strong>8 weeks</strong> · ~56 hours total</div>
+    <div class="meta-chip">🎯 Starting from <strong>basic SQL</strong></div>
+  </div>
+</header>
+
+<div class="progress-wrap">
+  <div class="progress-label">Overall progress <span id="prog-text">0 / 40 days</span></div>
+  <div class="bar-bg"><div class="bar-fill" id="prog-bar" style="width:0%"></div></div>
+</div>
+
+<div class="container" id="plan"></div>
+
+<footer>Check off each day as you complete it — progress saves automatically.</footer>
+
+<script>
+const phases = [
+  {
+    num: "01",
+    title: "Solidifying the Foundations",
+    duration: "Week 1–2 · 10 days",
+    resources: ["Microsoft SQL Server Documentation (docs.microsoft.com)", "SQLZoo.net — free interactive exercises", "W3Schools SQL — quick reference"],
+    days: [
+      { label: "Day 1", title: "SELECT deep dive", desc: "Revisit SELECT with column aliases, DISTINCT, TOP n. Practice on AdventureWorks sample DB.", tags: ["practice","theory"] },
+      { label: "Day 2", title: "WHERE & filtering", desc: "AND/OR/NOT, BETWEEN, IN, LIKE, NULL checks. Write 10 filter queries.", tags: ["practice"] },
+      { label: "Day 3", title: "ORDER BY & sorting", desc: "Single & multi-column sorts, ASC/DESC, NULL ordering behavior in SQL Server.", tags: ["practice"] },
+      { label: "Day 4", title: "Aggregate functions", desc: "COUNT, SUM, AVG, MIN, MAX. Understand when NULLs are ignored. GROUP BY basics.", tags: ["theory","practice"] },
+      { label: "Day 5", title: "GROUP BY & HAVING", desc: "Difference between WHERE and HAVING. Grouping by multiple columns. Common pitfalls.", tags: ["practice"] },
+      { label: "Day 6", title: "JOINs — INNER & LEFT", desc: "Master INNER JOIN and LEFT JOIN with visual diagrams. Practice 10 join queries.", tags: ["practice","theory"] },
+      { label: "Day 7", title: "JOINs — RIGHT, FULL, CROSS", desc: "RIGHT JOIN, FULL OUTER JOIN, CROSS JOIN. When to use each. Self-joins intro.", tags: ["theory","practice"] },
+      { label: "Day 8", title: "Subqueries", desc: "Scalar, correlated, and table subqueries. EXISTS vs IN performance difference.", tags: ["theory","practice"] },
+      { label: "Day 9", title: "String & date functions", desc: "LEN, SUBSTRING, CHARINDEX, UPPER, LOWER, GETDATE, DATEADD, DATEDIFF, FORMAT.", tags: ["practice"] },
+      { label: "Day 10", title: "Week 1–2 mini project", desc: "Query a sample DB (AdventureWorks) to answer 5 business questions using everything learned.", tags: ["project"] },
+    ]
+  },
+  {
+    num: "02",
+    title: "Intermediate SQL Techniques",
+    duration: "Week 3–4 · 10 days",
+    resources: ["Use Cases on LeetCode SQL — free tier", "SQLServerTutorial.net — structured lessons", "Brent Ozar's blog — practical SQL Server tips"],
+    days: [
+      { label: "Day 11", title: "CTEs (Common Table Expressions)", desc: "WITH clause, readable query restructuring, recursive CTEs intro.", tags: ["theory","practice"] },
+      { label: "Day 12", title: "Window functions — basics", desc: "ROW_NUMBER(), RANK(), DENSE_RANK(). OVER() and PARTITION BY clause.", tags: ["theory","practice"] },
+      { label: "Day 13", title: "Window functions — advanced", desc: "LAG(), LEAD(), FIRST_VALUE(), LAST_VALUE(), running totals with SUM() OVER.", tags: ["practice"] },
+      { label: "Day 14", title: "CASE expressions", desc: "Simple and searched CASE. Using CASE in SELECT, WHERE, ORDER BY, and GROUP BY.", tags: ["practice"] },
+      { label: "Day 15", title: "UNION, INTERSECT, EXCEPT", desc: "Set operators, UNION vs UNION ALL performance. Practical use cases.", tags: ["theory","practice"] },
+      { label: "Day 16", title: "NULL handling", desc: "ISNULL, COALESCE, NULLIF, IS NULL vs =NULL. NULL in aggregates and joins.", tags: ["theory","practice"] },
+      { label: "Day 17", title: "INSERT, UPDATE, DELETE", desc: "DML statements, output clause, batch updates, safe delete patterns.", tags: ["practice"] },
+      { label: "Day 18", title: "Transactions & error handling", desc: "BEGIN/COMMIT/ROLLBACK, TRY…CATCH, @@ERROR, XACT_STATE.", tags: ["theory","practice"] },
+      { label: "Day 19", title: "Views", desc: "Creating/altering views, indexed views intro, when to use views vs CTEs.", tags: ["theory","practice"] },
+      { label: "Day 20", title: "Week 3–4 project", desc: "Build a reporting query set: sales summary, ranking top customers, month-over-month comparison.", tags: ["project"] },
+    ]
+  },
+  {
+    num: "03",
+    title: "Performance & Query Optimization",
+    duration: "Week 5–6 · 10 days",
+    resources: ["Brent Ozar's sp_BlitzIndex & sp_Blitz (free tools)", "SQL Server Execution Plans by Grant Fritchey (free PDF)", "SQLSkills.com — index internals articles"],
+    days: [
+      { label: "Day 21", title: "How SQL Server executes queries", desc: "Parse → Compile → Optimize → Execute cycle. Statistics and cardinality.", tags: ["theory"] },
+      { label: "Day 22", title: "Reading execution plans", desc: "Actual vs estimated plans in SSMS. Key operators: Seek, Scan, Hash Join, Nested Loop.", tags: ["theory","practice"] },
+      { label: "Day 23", title: "Index fundamentals", desc: "Clustered vs non-clustered indexes. Heap tables. Index structure (B-tree).", tags: ["theory"] },
+      { label: "Day 24", title: "Creating & tuning indexes", desc: "Included columns, covering indexes, index key column order. Finding missing indexes.", tags: ["practice"] },
+      { label: "Day 25", title: "Index maintenance", desc: "Fragmentation, REBUILD vs REORGANIZE, fill factor, index usage stats DMVs.", tags: ["theory","practice"] },
+      { label: "Day 26", title: "Query tuning techniques", desc: "Avoid SELECT *, SARGability, implicit conversions, parameter sniffing basics.", tags: ["practice","theory"] },
+      { label: "Day 27", title: "Temp tables vs table variables vs CTEs", desc: "When to use each for performance. Spills, statistics, scope differences.", tags: ["theory","practice"] },
+      { label: "Day 28", title: "Statistics & cardinality", desc: "What statistics are, how to update them, auto-update settings, cardinality estimator.", tags: ["theory"] },
+      { label: "Day 29", title: "DMVs for performance monitoring", desc: "sys.dm_exec_query_stats, sys.dm_os_wait_stats, sys.dm_exec_requests.", tags: ["practice"] },
+      { label: "Day 30", title: "Optimization project", desc: "Take 3 slow queries, read their execution plans, add indexes, and measure improvement.", tags: ["project"] },
+    ]
+  },
+  {
+    num: "04",
+    title: "Advanced Topics & Real-World Skills",
+    duration: "Week 7–8 · 10 days",
+    resources: ["Microsoft Learn — SQL Server Advanced path (free)", "Itzik Ben-Gan T-SQL Fundamentals (book, highly recommended)", "Stack Overflow Data Explorer — practice on real data"],
+    days: [
+      { label: "Day 31", title: "Stored procedures", desc: "Parameters (in/out), recompile hints, error handling inside SPs, best practices.", tags: ["theory","practice"] },
+      { label: "Day 32", title: "User-defined functions", desc: "Scalar vs table-valued functions. Performance implications of scalar UDFs.", tags: ["theory","practice"] },
+      { label: "Day 33", title: "Triggers", desc: "AFTER vs INSTEAD OF triggers, inserted/deleted tables, avoiding common trigger pitfalls.", tags: ["theory","practice"] },
+      { label: "Day 34", title: "Dynamic SQL", desc: "sp_executesql, SQL injection risks, parameterization, when dynamic SQL is justified.", tags: ["theory","practice"] },
+      { label: "Day 35", title: "JSON & XML in SQL Server", desc: "FOR JSON, OPENJSON, FOR XML, reading nested structures. Modern data exchange patterns.", tags: ["practice"] },
+      { label: "Day 36", title: "Partitioning & large tables", desc: "Table partitioning concepts, partition switching, managing billions of rows.", tags: ["theory"] },
+      { label: "Day 37", title: "Security fundamentals", desc: "Schemas, logins vs users, GRANT/DENY/REVOKE, row-level security intro.", tags: ["theory","practice"] },
+      { label: "Day 38", title: "Backup, restore & HA basics", desc: "Full/diff/log backups, recovery models, Always On AG overview, RTO/RPO concepts.", tags: ["theory"] },
+      { label: "Day 39", title: "SQL Server Agent & automation", desc: "Jobs, schedules, alerts. Automating index maintenance and statistics updates.", tags: ["practice"] },
+      { label: "Day 40", title: "Capstone project", desc: "Design a small schema, write stored procedures, add indexes, implement error handling, and document your work.", tags: ["project"] },
+    ]
+  }
+];
+
+const STORAGE_KEY = 'sql_plan_v1';
+
+function loadChecked() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch { return {}; }
+}
+
+function saveChecked(obj) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(obj)); } catch {}
+}
+
+let checked = loadChecked();
+
+function totalDays() { return phases.reduce((a,p) => a + p.days.length, 0); }
+function countChecked() { return Object.values(checked).filter(Boolean).length; }
+
+function updateProgress() {
+  const total = totalDays();
+  const done = countChecked();
+  const pct = Math.round(done / total * 100);
+  document.getElementById('prog-text').textContent = `${done} / ${total} days`;
+  document.getElementById('prog-bar').style.width = pct + '%';
+}
+
+function tagHTML(tag) {
+  return `<span class="dtag ${tag}">${tag}</span>`;
+}
+
+function render() {
+  const container = document.getElementById('plan');
+  container.innerHTML = '';
+
+  phases.forEach((phase, pi) => {
+    const div = document.createElement('div');
+    div.className = 'phase open';
+
+    const header = document.createElement('div');
+    header.className = 'phase-header';
+    header.innerHTML = `
+      <span class="phase-num">${phase.num}</span>
+      <span class="phase-title">${phase.title}</span>
+      <span class="phase-duration">${phase.duration}</span>
+      <span class="chevron">▼</span>
+    `;
+    header.addEventListener('click', () => {
+      div.classList.toggle('open');
+    });
+    div.appendChild(header);
+
+    const body = document.createElement('div');
+    body.className = 'phase-body';
+
+    phase.days.forEach((day, di) => {
+      const key = `p${pi}_d${di}`;
+      const isChecked = !!checked[key];
+
+      const item = document.createElement('div');
+      item.className = 'day-item' + (isChecked ? ' completed' : '');
+
+      item.innerHTML = `
+        <div class="day-check ${isChecked ? 'checked' : ''}" data-key="${key}">
+          ${isChecked ? '✓' : ''}
+        </div>
+        <span class="day-label">${day.label}</span>
+        <div class="day-content">
+          <div class="day-title">${day.title}</div>
+          <div class="day-desc">${day.desc}</div>
+          <div class="day-tags">${day.tags.map(tagHTML).join('')}</div>
+        </div>
+      `;
+
+      const checkEl = item.querySelector('.day-check');
+      checkEl.addEventListener('click', () => {
+        checked[key] = !checked[key];
+        saveChecked(checked);
+        render();
+        updateProgress();
+      });
+
+      body.appendChild(item);
+    });
+
+    // Resources
+    const res = document.createElement('div');
+    res.className = 'resources';
+    res.innerHTML = `
+      <div class="res-title">// recommended resources</div>
+      <ul class="res-list">${phase.resources.map(r => `<li>${r}</li>`).join('')}</ul>
+    `;
+    body.appendChild(res);
+
+    div.appendChild(body);
+    container.appendChild(div);
+  });
+
+  updateProgress();
+}
+
+render();
+</script>
+</body>
+</html>
