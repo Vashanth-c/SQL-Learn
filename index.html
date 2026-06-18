@@ -3,498 +3,120 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SQL Server Study Plan</title>
+<title>SQL Server Study Plan – Phase 1</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;700&display=swap');
-
-  :root {
-    --bg: #0e1117;
-    --surface: #161b27;
-    --card: #1e2535;
-    --border: #2a3347;
-    --accent: #00d4aa;
-    --accent2: #5b8dee;
-    --warn: #f5a623;
-    --text: #e2e8f0;
-    --muted: #8892a4;
-    --done: #22c55e;
-    --easy: #22c55e;
-    --medium: #f5a623;
-    --hard: #ef4444;
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'IBM Plex Sans', sans-serif;
-    min-height: 100vh;
-    padding: 24px 16px 48px;
-  }
-
-  header { max-width: 780px; margin: 0 auto 24px; }
-  .tag { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.12em; color: var(--accent); text-transform: uppercase; margin-bottom: 10px; }
-  h1 { font-size: clamp(22px, 5vw, 34px); font-weight: 700; line-height: 1.15; margin-bottom: 8px; }
-  h1 span { color: var(--accent); }
-  .subtitle { color: var(--muted); font-size: 13px; line-height: 1.6; }
-
-  .meta-row { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
-  .meta-chip { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 6px 12px; font-size: 11px; color: var(--muted); display: flex; align-items: center; gap: 5px; }
-  .meta-chip strong { color: var(--text); }
-
-  .db-banner {
-    max-width: 780px; margin: 0 auto 20px;
-    background: linear-gradient(135deg, rgba(0,212,170,0.08), rgba(91,141,238,0.08));
-    border: 1px solid rgba(0,212,170,0.25); border-radius: 10px; padding: 12px 16px;
-    display: flex; align-items: center; gap: 12px;
-  }
-  .db-icon { font-size: 22px; }
-  .db-info { flex: 1; }
-  .db-title { font-size: 13px; font-weight: 600; color: var(--accent); margin-bottom: 2px; }
-  .db-desc { font-size: 11px; color: var(--muted); line-height: 1.5; }
-
-  .progress-wrap { max-width: 780px; margin: 0 auto 20px; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; }
-  .progress-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 8px; }
-  .progress-label span { color: var(--accent); font-family: 'IBM Plex Mono', monospace; }
-  .bar-bg { background: var(--border); border-radius: 99px; height: 5px; overflow: hidden; }
-  .bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 99px; transition: width 0.5s ease; }
-
-  .container { max-width: 780px; margin: 0 auto; }
-
-  .phase { margin-bottom: 20px; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
-  .phase-header { display: flex; align-items: center; gap: 12px; padding: 13px 16px; background: var(--surface); cursor: pointer; user-select: none; }
-  .phase-num { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--accent); min-width: 26px; }
-  .phase-title { font-weight: 600; font-size: 14px; flex: 1; }
-  .phase-duration { font-size: 11px; color: var(--muted); font-family: 'IBM Plex Mono', monospace; }
-  .chevron { color: var(--muted); font-size: 11px; transition: transform 0.2s; }
-  .phase.open .chevron { transform: rotate(180deg); }
-  .phase-body { display: none; }
-  .phase.open .phase-body { display: block; }
-
-  .day-item { border-top: 1px solid var(--border); }
-  .day-row { display: flex; align-items: flex-start; gap: 12px; padding: 11px 16px; cursor: pointer; transition: background 0.15s; }
-  .day-row:hover { background: rgba(255,255,255,0.025); }
-
-  .day-check { width: 17px; height: 17px; border: 2px solid var(--border); border-radius: 4px; flex-shrink: 0; margin-top: 2px; display: flex; align-items: center; justify-content: center; transition: all 0.15s; font-size: 10px; cursor: pointer; }
-  .day-check.checked { background: var(--done); border-color: var(--done); color: #fff; }
-
-  .day-label { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--accent2); min-width: 48px; margin-top: 2px; }
-  .day-content { flex: 1; }
-  .day-title { font-size: 13px; font-weight: 500; margin-bottom: 3px; }
-  .day-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
-  .day-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 5px; }
-  .dtag { font-size: 10px; padding: 2px 6px; border-radius: 4px; font-family: 'IBM Plex Mono', monospace; }
-  .dtag.practice { background: rgba(0,212,170,0.12); color: var(--accent); }
-  .dtag.theory { background: rgba(91,141,238,0.12); color: var(--accent2); }
-  .dtag.project { background: rgba(245,166,35,0.12); color: var(--warn); }
-
-  .day-expand-icon { color: var(--muted); font-size: 10px; margin-top: 4px; transition: transform 0.2s; flex-shrink: 0; }
-  .day-item.qs-open .day-expand-icon { transform: rotate(180deg); }
-  .day-item.completed .day-title { text-decoration: line-through; color: var(--muted); }
-
-  /* Questions panel */
-  .questions-panel { display: none; border-top: 1px solid var(--border); background: rgba(0,0,0,0.2); }
-  .day-item.qs-open .questions-panel { display: block; }
-
-  .diff-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); }
-  .diff-tab {
-    flex: 1; padding: 10px 8px; font-size: 12px; font-family: 'IBM Plex Mono', monospace;
-    cursor: pointer; border: none; background: transparent; color: var(--muted);
-    transition: all 0.15s; border-bottom: 2px solid transparent; margin-bottom: -1px;
-  }
-  .diff-tab:hover { color: var(--text); background: rgba(255,255,255,0.03); }
-  .diff-tab.active-easy { color: var(--easy); border-bottom-color: var(--easy); background: rgba(34,197,94,0.05); }
-  .diff-tab.active-medium { color: var(--medium); border-bottom-color: var(--medium); background: rgba(245,166,35,0.05); }
-  .diff-tab.active-hard { color: var(--hard); border-bottom-color: var(--hard); background: rgba(239,68,68,0.05); }
-
-  .qs-content { display: none; padding: 14px 16px; }
-  .qs-content.active { display: block; }
-
-  .q-loading { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 13px; padding: 8px 0; }
-  .spinner { width: 15px; height: 15px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .q-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
-  .q-card {
-    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
-    padding: 12px 14px; position: relative; border-left: 3px solid transparent;
-  }
-  .q-card.easy { border-left-color: var(--easy); }
-  .q-card.medium { border-left-color: var(--medium); }
-  .q-card.hard { border-left-color: var(--hard); }
-
-  .q-num { font-family: 'IBM Plex Mono', monospace; font-size: 10px; margin-bottom: 5px; }
-  .q-num.easy { color: var(--easy); }
-  .q-num.medium { color: var(--medium); }
-  .q-num.hard { color: var(--hard); }
-
-  .q-text { color: var(--text); font-size: 13px; line-height: 1.65; margin-bottom: 6px; }
-
-  .q-tables { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 6px; }
-  .q-table-tag { font-size: 10px; font-family: 'IBM Plex Mono', monospace; background: rgba(91,141,238,0.12); color: var(--accent2); padding: 2px 7px; border-radius: 4px; }
-
-  .q-hint { font-size: 11px; color: var(--muted); font-style: italic; border-top: 1px solid var(--border); padding-top: 6px; margin-top: 2px; }
-
-  .q-error { color: var(--hard); font-size: 13px; padding: 12px; background: rgba(239,68,68,0.08); border-radius: 8px; border: 1px solid rgba(239,68,68,0.2); }
-
-  .retry-btn { margin-top: 10px; padding: 6px 14px; background: transparent; border: 1px solid var(--border); border-radius: 6px; color: var(--muted); font-size: 12px; cursor: pointer; }
-  .retry-btn:hover { border-color: var(--accent); color: var(--accent); }
-
-  .diff-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-family: 'IBM Plex Mono', monospace; padding: 2px 7px; border-radius: 4px; margin-bottom: 10px; }
-  .diff-badge.easy { background: rgba(34,197,94,0.12); color: var(--easy); }
-  .diff-badge.medium { background: rgba(245,166,35,0.12); color: var(--medium); }
-  .diff-badge.hard { background: rgba(239,68,68,0.12); color: var(--hard); }
-
-  .resources { padding: 11px 16px; border-top: 1px solid var(--border); background: rgba(0,212,170,0.03); }
-  .res-title { font-size: 10px; color: var(--accent); margin-bottom: 5px; font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.1em; }
-  .res-list { list-style: none; display: flex; flex-direction: column; gap: 2px; }
-  .res-list li { font-size: 11px; color: var(--muted); padding-left: 12px; position: relative; }
-  .res-list li::before { content: '→'; position: absolute; left: 0; color: var(--accent); }
-
-  footer { max-width: 780px; margin: 24px auto 0; text-align: center; font-size: 11px; color: var(--muted); font-family: 'IBM Plex Mono', monospace; }
+  :root{--bg:#0e1117;--surface:#161b27;--card:#1e2535;--border:#2a3347;--accent:#00d4aa;--accent2:#5b8dee;--warn:#f5a623;--text:#e2e8f0;--muted:#8892a4;--done:#22c55e;--easy:#22c55e;--medium:#f5a623;--hard:#ef4444;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;min-height:100vh;padding:24px 16px 48px;}
+  header{max-width:780px;margin:0 auto 22px;}
+  .tag{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--accent);text-transform:uppercase;margin-bottom:8px;}
+  h1{font-size:clamp(22px,5vw,34px);font-weight:700;line-height:1.15;margin-bottom:6px;}
+  h1 span{color:var(--accent);}
+  .subtitle{color:var(--muted);font-size:13px;}
+  .meta-row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
+  .meta-chip{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:6px 12px;font-size:11px;color:var(--muted);display:flex;align-items:center;gap:5px;}
+  .meta-chip strong{color:var(--text);}
+  .db-banner{max-width:780px;margin:0 auto 18px;background:linear-gradient(135deg,rgba(0,212,170,.08),rgba(91,141,238,.08));border:1px solid rgba(0,212,170,.25);border-radius:10px;padding:12px 16px;display:flex;align-items:center;gap:12px;}
+  .db-icon{font-size:22px;}
+  .db-info{flex:1;}
+  .db-title{font-size:13px;font-weight:600;color:var(--accent);margin-bottom:2px;}
+  .db-desc{font-size:11px;color:var(--muted);line-height:1.5;}
+  .progress-wrap{max-width:780px;margin:0 auto 18px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 16px;}
+  .progress-label{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:8px;}
+  .progress-label span{color:var(--accent);font-family:'IBM Plex Mono',monospace;}
+  .bar-bg{background:var(--border);border-radius:99px;height:5px;overflow:hidden;}
+  .bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:99px;transition:width .5s ease;}
+  .container{max-width:780px;margin:0 auto;}
+  .phase{margin-bottom:20px;border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+  .phase-header{display:flex;align-items:center;gap:12px;padding:13px 16px;background:var(--surface);cursor:pointer;user-select:none;}
+  .phase-num{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent);min-width:26px;}
+  .phase-title{font-weight:600;font-size:14px;flex:1;}
+  .phase-duration{font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace;}
+  .chevron{color:var(--muted);font-size:11px;transition:transform .2s;}
+  .phase.open .chevron{transform:rotate(180deg);}
+  .phase-body{display:none;}
+  .phase.open .phase-body{display:block;}
+  .day-item{border-top:1px solid var(--border);}
+  .day-row{display:flex;align-items:flex-start;gap:12px;padding:11px 16px;cursor:pointer;transition:background .15s;}
+  .day-row:hover{background:rgba(255,255,255,.025);}
+  .day-check{width:17px;height:17px;border:2px solid var(--border);border-radius:4px;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;transition:all .15s;font-size:10px;cursor:pointer;}
+  .day-check.checked{background:var(--done);border-color:var(--done);color:#fff;}
+  .day-label{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent2);min-width:48px;margin-top:2px;}
+  .day-content{flex:1;}
+  .day-title{font-size:13px;font-weight:500;margin-bottom:3px;}
+  .day-desc{font-size:12px;color:var(--muted);line-height:1.5;}
+  .day-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px;}
+  .dtag{font-size:10px;padding:2px 6px;border-radius:4px;font-family:'IBM Plex Mono',monospace;}
+  .dtag.practice{background:rgba(0,212,170,.12);color:var(--accent);}
+  .dtag.theory{background:rgba(91,141,238,.12);color:var(--accent2);}
+  .dtag.project{background:rgba(245,166,35,.12);color:var(--warn);}
+  .day-expand-icon{color:var(--muted);font-size:10px;margin-top:4px;transition:transform .2s;flex-shrink:0;}
+  .day-item.qs-open .day-expand-icon{transform:rotate(180deg);}
+  .day-item.completed .day-title{text-decoration:line-through;color:var(--muted);}
+  .questions-panel{display:none;border-top:1px solid var(--border);background:rgba(0,0,0,.2);}
+  .day-item.qs-open .questions-panel{display:block;}
+  .diff-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);}
+  .diff-tab{flex:1;padding:10px 8px;font-size:12px;font-family:'IBM Plex Mono',monospace;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all .15s;border-bottom:2px solid transparent;margin-bottom:-1px;}
+  .diff-tab:hover{color:var(--text);background:rgba(255,255,255,.03);}
+  .diff-tab.active-easy{color:var(--easy);border-bottom-color:var(--easy);background:rgba(34,197,94,.05);}
+  .diff-tab.active-medium{color:var(--medium);border-bottom-color:var(--medium);background:rgba(245,166,35,.05);}
+  .diff-tab.active-hard{color:var(--hard);border-bottom-color:var(--hard);background:rgba(239,68,68,.05);}
+  .qs-content{display:none;padding:14px 16px;}
+  .qs-content.active{display:block;}
+  .diff-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-family:'IBM Plex Mono',monospace;padding:2px 7px;border-radius:4px;margin-bottom:10px;}
+  .diff-badge.easy{background:rgba(34,197,94,.12);color:var(--easy);}
+  .diff-badge.medium{background:rgba(245,166,35,.12);color:var(--medium);}
+  .diff-badge.hard{background:rgba(239,68,68,.12);color:var(--hard);}
+  .q-list{list-style:none;display:flex;flex-direction:column;gap:10px;}
+  .q-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 14px;border-left:3px solid transparent;}
+  .q-card.easy{border-left-color:var(--easy);}
+  .q-card.medium{border-left-color:var(--medium);}
+  .q-card.hard{border-left-color:var(--hard);}
+  .q-num{font-family:'IBM Plex Mono',monospace;font-size:10px;margin-bottom:5px;}
+  .q-num.easy{color:var(--easy);}
+  .q-num.medium{color:var(--medium);}
+  .q-num.hard{color:var(--hard);}
+  .q-text{color:var(--text);font-size:13px;line-height:1.65;margin-bottom:6px;}
+  .q-tables{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px;}
+  .q-table-tag{font-size:10px;font-family:'IBM Plex Mono',monospace;background:rgba(91,141,238,.12);color:var(--accent2);padding:2px 7px;border-radius:4px;}
+  .q-hint{font-size:11px;color:var(--muted);font-style:italic;border-top:1px solid var(--border);padding-top:6px;}
+  .resources{padding:11px 16px;border-top:1px solid var(--border);background:rgba(0,212,170,.03);}
+  .res-title{font-size:10px;color:var(--accent);margin-bottom:5px;font-family:'IBM Plex Mono',monospace;letter-spacing:.1em;}
+  .res-list{list-style:none;display:flex;flex-direction:column;gap:2px;}
+  .res-list li{font-size:11px;color:var(--muted);padding-left:12px;position:relative;}
+  .res-list li::before{content:'→';position:absolute;left:0;color:var(--accent);}
+  footer{max-width:780px;margin:24px auto 0;text-align:center;font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace;}
 </style>
 </head>
 <body>
-
 <header>
-  <div class="tag">// study plan</div>
-  <h1>SQL Server <span>Mastery</span></h1>
-  <p class="subtitle">8-week plan · 1 hour/day · Click any day for AI-generated practice questions</p>
+  <div class="tag">// phase 1 of 4</div>
+  <h1>SQL Server <span>Foundations</span></h1>
+  <p class="subtitle">Week 1–2 · 10 days · 1 hour/day · All questions use AdventureWorksLT2022</p>
   <div class="meta-row">
     <div class="meta-chip">⏱ <strong>1 hr / day</strong></div>
-    <div class="meta-chip">📅 <strong>8 weeks · 40 days</strong></div>
-    <div class="meta-chip">🤖 <strong>AI questions</strong></div>
+    <div class="meta-chip">📅 <strong>Week 1–2 · 10 days</strong></div>
     <div class="meta-chip">🗄️ <strong>AdventureWorksLT2022</strong></div>
+    <div class="meta-chip">❓ <strong>150 questions</strong> (5×3×10)</div>
   </div>
 </header>
 
 <div class="db-banner">
   <div class="db-icon">🗄️</div>
   <div class="db-info">
-    <div class="db-title">AdventureWorksLT2022 Database</div>
-    <div class="db-desc">All questions use real tables: <code style="color:var(--accent2)">SalesLT.Customer</code> · <code style="color:var(--accent2)">SalesLT.Product</code> · <code style="color:var(--accent2)">SalesLT.SalesOrderHeader</code> · <code style="color:var(--accent2)">SalesLT.SalesOrderDetail</code> · <code style="color:var(--accent2)">SalesLT.Address</code> · <code style="color:var(--accent2)">SalesLT.ProductCategory</code> and more.</div>
+    <div class="db-title">AdventureWorksLT2022 – All Questions Pre-Loaded</div>
+    <div class="db-desc">Tables used: <code style="color:var(--accent2)">SalesLT.Customer</code> · <code style="color:var(--accent2)">SalesLT.Product</code> · <code style="color:var(--accent2)">SalesLT.SalesOrderHeader</code> · <code style="color:var(--accent2)">SalesLT.SalesOrderDetail</code> · <code style="color:var(--accent2)">SalesLT.Address</code> · <code style="color:var(--accent2)">SalesLT.ProductCategory</code> · No internet required.</div>
   </div>
 </div>
 
 <div class="progress-wrap">
-  <div class="progress-label">Overall progress <span id="prog-text">0 / 40 days</span></div>
+  <div class="progress-label">Phase 1 progress <span id="prog-text">0 / 10 days</span></div>
   <div class="bar-bg"><div class="bar-fill" id="prog-bar" style="width:0%"></div></div>
 </div>
 
 <div class="container" id="plan"></div>
-<footer>Click a day row → tabs for 🟢 Easy · 🟡 Medium · 🔴 Hard · 5 questions each · Progress auto-saves</footer>
+<footer>Click any day → tabs for 🟢 Easy · 🟡 Medium · 🔴 Hard · 5 questions each · All pre-loaded, works offline · Progress auto-saves</footer>
 
 <script>
-// AdventureWorksLT2022 schema context passed to the AI
-const AW_SCHEMA = `AdventureWorksLT2022 database schema (use SalesLT schema prefix):
-
-Tables and key columns:
-- SalesLT.Customer: CustomerID, NameStyle, Title, FirstName, MiddleName, LastName, Suffix, CompanyName, SalesPerson, EmailAddress, Phone, PasswordHash, PasswordSalt, rowguid, ModifiedDate
-- SalesLT.Address: AddressID, AddressLine1, AddressLine2, City, StateProvince, CountryRegion, PostalCode, rowguid, ModifiedDate
-- SalesLT.CustomerAddress: CustomerID, AddressID, AddressType, rowguid, ModifiedDate
-- SalesLT.Product: ProductID, Name, ProductNumber, Color, StandardCost, ListPrice, Size, Weight, ProductCategoryID, ProductModelID, SellStartDate, SellEndDate, DiscontinuedDate, ThumbNailPhoto, ThumbnailPhotoFileName, rowguid, ModifiedDate
-- SalesLT.ProductCategory: ProductCategoryID, ParentProductCategoryID, Name, rowguid, ModifiedDate
-- SalesLT.ProductModel: ProductModelID, Name, CatalogDescription, rowguid, ModifiedDate
-- SalesLT.ProductModelProductDescription: ProductModelID, ProductDescriptionID, Culture, rowguid, ModifiedDate
-- SalesLT.ProductDescription: ProductDescriptionID, Description, rowguid, ModifiedDate
-- SalesLT.SalesOrderHeader: SalesOrderID, RevisionNumber, OrderDate, DueDate, ShipDate, Status, OnlineOrderFlag, SalesOrderNumber, PurchaseOrderNumber, AccountNumber, CustomerID, ShipToAddressID, BillToAddressID, ShipMethod, CreditCardApprovalCode, SubTotal, TaxAmt, Freight, TotalDue, Comment, rowguid, ModifiedDate
-- SalesLT.SalesOrderDetail: SalesOrderID, SalesOrderDetailID, OrderQty, ProductID, UnitPrice, UnitPriceDiscount, LineTotal, rowguid, ModifiedDate`;
-
-const phases = [
-  {
-    num:"01", title:"Solidifying the Foundations", duration:"Week 1–2 · 10 days",
-    resources:["Microsoft SQL Server Docs (docs.microsoft.com)","SQLZoo.net — free interactive exercises","W3Schools SQL — quick reference"],
-    days:[
-      {label:"Day 1",  title:"SELECT deep dive",         desc:"SELECT with column aliases, DISTINCT, TOP n. Practice on Customer and Product tables.", tags:["practice","theory"]},
-      {label:"Day 2",  title:"WHERE & filtering",         desc:"AND/OR/NOT, BETWEEN, IN, LIKE, NULL checks on Customer, Product, SalesOrderHeader.", tags:["practice"]},
-      {label:"Day 3",  title:"ORDER BY & sorting",        desc:"Single & multi-column sorts, ASC/DESC, NULL ordering on Product and Customer.", tags:["practice"]},
-      {label:"Day 4",  title:"Aggregate functions",       desc:"COUNT, SUM, AVG, MIN, MAX on SalesOrderDetail and SalesOrderHeader.", tags:["theory","practice"]},
-      {label:"Day 5",  title:"GROUP BY & HAVING",         desc:"GROUP BY on SalesOrderHeader, ProductCategory. HAVING for filtered aggregates.", tags:["practice"]},
-      {label:"Day 6",  title:"JOINs — INNER & LEFT",      desc:"Join Customer with SalesOrderHeader, Product with ProductCategory.", tags:["practice","theory"]},
-      {label:"Day 7",  title:"JOINs — RIGHT, FULL, CROSS",desc:"RIGHT JOIN, FULL OUTER JOIN, CROSS JOIN across SalesLT tables. Self-joins.", tags:["theory","practice"]},
-      {label:"Day 8",  title:"Subqueries",                desc:"Scalar, correlated, table subqueries. EXISTS vs IN on Orders and Products.", tags:["theory","practice"]},
-      {label:"Day 9",  title:"String & date functions",   desc:"LEN, SUBSTRING, CHARINDEX on Customer names. DATEADD, DATEDIFF on OrderDate.", tags:["practice"]},
-      {label:"Day 10", title:"Week 1–2 mini project",     desc:"Answer 5 business questions: top customers, bestselling products, revenue by region.", tags:["project"]},
-    ]
-  },
-  {
-    num:"02", title:"Intermediate SQL Techniques", duration:"Week 3–4 · 10 days",
-    resources:["LeetCode SQL — free tier","SQLServerTutorial.net","Brent Ozar's blog"],
-    days:[
-      {label:"Day 11", title:"CTEs",                       desc:"WITH clause to simplify multi-step queries on SalesOrderHeader and Customer.", tags:["theory","practice"]},
-      {label:"Day 12", title:"Window functions — basics",   desc:"ROW_NUMBER(), RANK(), DENSE_RANK() on SalesOrderDetail and Product prices.", tags:["theory","practice"]},
-      {label:"Day 13", title:"Window functions — advanced", desc:"LAG(), LEAD(), running totals with SUM() OVER on monthly sales data.", tags:["practice"]},
-      {label:"Day 14", title:"CASE expressions",            desc:"Categorize products by price range, label order status using CASE.", tags:["practice"]},
-      {label:"Day 15", title:"UNION, INTERSECT, EXCEPT",    desc:"Combine results from Address, Customer across set operators.", tags:["theory","practice"]},
-      {label:"Day 16", title:"NULL handling",               desc:"ISNULL, COALESCE, NULLIF on MiddleName, Color, Size columns.", tags:["theory","practice"]},
-      {label:"Day 17", title:"INSERT, UPDATE, DELETE",      desc:"Modify Customer, Product data safely. Use OUTPUT clause.", tags:["practice"]},
-      {label:"Day 18", title:"Transactions & error handling",desc:"BEGIN/COMMIT/ROLLBACK, TRY…CATCH on order insert scenarios.", tags:["theory","practice"]},
-      {label:"Day 19", title:"Views",                       desc:"Create views over SalesOrderHeader + Customer. Indexed views intro.", tags:["theory","practice"]},
-      {label:"Day 20", title:"Week 3–4 project",            desc:"Month-over-month sales report, customer ranking, product performance view.", tags:["project"]},
-    ]
-  },
-  {
-    num:"03", title:"Performance & Query Optimization", duration:"Week 5–6 · 10 days",
-    resources:["Brent Ozar's sp_BlitzIndex (free)","SQL Server Execution Plans — Grant Fritchey (free PDF)","SQLSkills.com"],
-    days:[
-      {label:"Day 21", title:"How SQL Server executes queries", desc:"Parse → Compile → Optimize → Execute on AdventureWorks queries.", tags:["theory"]},
-      {label:"Day 22", title:"Reading execution plans",         desc:"Actual vs estimated plans for SalesOrderHeader joins and Product seeks.", tags:["theory","practice"]},
-      {label:"Day 23", title:"Index fundamentals",              desc:"Clustered vs non-clustered on SalesLT tables. Heap vs B-tree.", tags:["theory"]},
-      {label:"Day 24", title:"Creating & tuning indexes",       desc:"Covering indexes on SalesOrderDetail. Missing index recommendations.", tags:["practice"]},
-      {label:"Day 25", title:"Index maintenance",               desc:"Fragmentation on SalesLT indexes. REBUILD vs REORGANIZE decisions.", tags:["theory","practice"]},
-      {label:"Day 26", title:"Query tuning techniques",         desc:"SARGability on OrderDate, CustomerID. Avoid implicit conversions.", tags:["practice","theory"]},
-      {label:"Day 27", title:"Temp tables vs table variables vs CTEs", desc:"Performance comparison using SalesOrderHeader aggregations.", tags:["theory","practice"]},
-      {label:"Day 28", title:"Statistics & cardinality",        desc:"Statistics on Product, SalesOrderDetail. Cardinality estimator behavior.", tags:["theory"]},
-      {label:"Day 29", title:"DMVs for performance monitoring", desc:"sys.dm_exec_query_stats for top queries on AdventureWorks.", tags:["practice"]},
-      {label:"Day 30", title:"Optimization project",            desc:"Find 3 slow queries in AdventureWorks, analyze and optimize each.", tags:["project"]},
-    ]
-  },
-  {
-    num:"04", title:"Advanced Topics & Real-World Skills", duration:"Week 7–8 · 10 days",
-    resources:["Microsoft Learn — SQL Server Advanced (free)","Itzik Ben-Gan T-SQL Fundamentals (book)","Stack Overflow Data Explorer"],
-    days:[
-      {label:"Day 31", title:"Stored procedures",          desc:"SPs for order processing, customer lookup using AdventureWorks tables.", tags:["theory","practice"]},
-      {label:"Day 32", title:"User-defined functions",     desc:"TVFs for product search, scalar UDF for discount calculation.", tags:["theory","practice"]},
-      {label:"Day 33", title:"Triggers",                   desc:"AFTER INSERT trigger on SalesOrderHeader to log changes.", tags:["theory","practice"]},
-      {label:"Day 34", title:"Dynamic SQL",                desc:"Dynamic search SP for Product with optional filters using sp_executesql.", tags:["theory","practice"]},
-      {label:"Day 35", title:"JSON & XML in SQL Server",   desc:"FOR JSON from SalesOrderHeader + Detail. Parse XML product catalog.", tags:["practice"]},
-      {label:"Day 36", title:"Partitioning & large tables", desc:"Partition SalesOrderHeader by OrderDate year. Switching strategy.", tags:["theory"]},
-      {label:"Day 37", title:"Security fundamentals",      desc:"Schema permissions on SalesLT. Row-level security for SalesPerson.", tags:["theory","practice"]},
-      {label:"Day 38", title:"Backup, restore & HA basics", desc:"Backup AdventureWorks. Recovery models, Always On overview.", tags:["theory"]},
-      {label:"Day 39", title:"SQL Server Agent & automation", desc:"Automate index rebuild job for SalesLT tables nightly.", tags:["practice"]},
-      {label:"Day 40", title:"Capstone project",           desc:"Full solution: schema, SPs, indexes, error handling, security on AdventureWorks.", tags:["project"]},
-    ]
-  }
-];
-
-const STORAGE_KEY = 'sql_aw_v1';
-let checked = {};
-try { checked = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch {}
-let qCache = {};
-
-function saveChecked() {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(checked)); } catch {}
-}
-
-function updateProgress() {
-  const total = phases.reduce((a,p) => a + p.days.length, 0);
-  const done = Object.values(checked).filter(Boolean).length;
-  document.getElementById('prog-text').textContent = `${done} / ${total} days`;
-  document.getElementById('prog-bar').style.width = Math.round(done/total*100) + '%';
-}
-
-async function fetchQuestions(dayTitle, dayDesc, difficulty) {
-  const diffGuide = {
-    easy:   'beginner-friendly, testing basic SQL syntax and single-table queries. Students know SQL basics.',
-    medium: 'intermediate, requiring JOINs across multiple tables, aggregations, or subqueries together.',
-    hard:   'advanced, involving complex multi-table joins, window functions, CTEs, performance thinking, or tricky edge cases.'
-  };
-
-  const prompt = `You are a SQL Server trainer using AdventureWorksLT2022.
-
-${AW_SCHEMA}
-
-Generate exactly 5 ${difficulty.toUpperCase()} practice questions for today's topic:
-Topic: "${dayTitle}"
-Description: "${dayDesc}"
-Difficulty: ${diffGuide[difficulty]}
-
-IMPORTANT RULES:
-- Every question MUST use real AdventureWorksLT2022 tables with SalesLT. prefix
-- Questions must be practical and directly test the topic
-- Easy: single table or simple syntax
-- Medium: multi-table joins + aggregation
-- Hard: window functions / CTEs / performance / complex logic
-- tables field: list only the SalesLT tables used (without schema prefix, e.g. "Customer", "Product")
-
-Return ONLY a valid JSON array, no markdown, no extra text:
-[
-  {
-    "q": "Full question text here",
-    "tables": ["TableName1", "TableName2"],
-    "hint": "Short hint — max 12 words"
-  }
-]`;
-
-  const response = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      model: "claude-sonnet-4-6",
-      max_tokens: 1500,
-      messages: [{ role: "user", content: prompt }]
-    })
-  });
-
-  if (!response.ok) throw new Error('API error ' + response.status);
-  const data = await response.json();
-  const text = data.content.map(i => i.text || '').join('');
-  const clean = text.replace(/```json|```/g, '').trim();
-  const parsed = JSON.parse(clean);
-  if (!Array.isArray(parsed) || parsed.length < 5) throw new Error('Invalid response');
-  return parsed;
-}
-
-function renderQuestions(questions, difficulty) {
-  return `
-    <div class="diff-badge ${difficulty}">${
-      difficulty === 'easy' ? '🟢 Easy — 5 Questions' :
-      difficulty === 'medium' ? '🟡 Medium — 5 Questions' :
-      '🔴 Hard — 5 Questions'
-    }</div>
-    <ul class="q-list">
-      ${questions.map((q, i) => `
-        <li class="q-card ${difficulty}">
-          <div class="q-num ${difficulty}">Q${i+1} · AdventureWorksLT2022</div>
-          <div class="q-text">${q.q}</div>
-          ${q.tables && q.tables.length ? `
-            <div class="q-tables">${q.tables.map(t => `<span class="q-table-tag">SalesLT.${t}</span>`).join('')}</div>
-          ` : ''}
-          <div class="q-hint">💡 ${q.hint}</div>
-        </li>
-      `).join('')}
-    </ul>`;
-}
-
-async function showQuestions(panel, dayTitle, dayDesc, difficulty, tabEl) {
-  const cacheKey = `${dayTitle}__${difficulty}`;
-
-  // Update tabs
-  panel.querySelectorAll('.diff-tab').forEach(t => {
-    t.className = 'diff-tab';
-  });
-  tabEl.className = `diff-tab active-${difficulty}`;
-
-  // Show panel
-  panel.querySelectorAll('.qs-content').forEach(c => c.classList.remove('active'));
-  const contentDiv = panel.querySelector(`.qs-content[data-diff="${difficulty}"]`);
-  contentDiv.classList.add('active');
-
-  if (qCache[cacheKey]) return; // already loaded
-
-  contentDiv.innerHTML = `<div class="q-loading"><div class="spinner"></div> Generating ${difficulty} questions using AdventureWorksLT2022...</div>`;
-
-  try {
-    const questions = await fetchQuestions(dayTitle, dayDesc, difficulty);
-    qCache[cacheKey] = questions;
-    contentDiv.innerHTML = renderQuestions(questions, difficulty);
-  } catch (e) {
-    contentDiv.innerHTML = `
-      <div class="q-error">⚠ Could not generate questions. Please try again.</div>
-      <button class="retry-btn" onclick="retryLoad(this, '${dayTitle.replace(/'/g,"\\'")}', '${dayDesc.replace(/'/g,"\\'")}', '${difficulty}')">↺ Retry</button>`;
-  }
-}
-
-window.retryLoad = async function(btn, dayTitle, dayDesc, difficulty) {
-  const contentDiv = btn.closest('.qs-content');
-  const cacheKey = `${dayTitle}__${difficulty}`;
-  contentDiv.innerHTML = `<div class="q-loading"><div class="spinner"></div> Retrying...</div>`;
-  try {
-    const questions = await fetchQuestions(dayTitle, dayDesc, difficulty);
-    qCache[cacheKey] = questions;
-    contentDiv.innerHTML = renderQuestions(questions, difficulty);
-  } catch(e) {
-    contentDiv.innerHTML = `
-      <div class="q-error">⚠ Still failing. Check your connection.</div>
-      <button class="retry-btn" onclick="retryLoad(this, '${dayTitle.replace(/'/g,"\\'")}', '${dayDesc.replace(/'/g,"\\'")}', '${difficulty}')">↺ Retry</button>`;
-  }
-};
-
-function render() {
-  const container = document.getElementById('plan');
-  container.innerHTML = '';
-
-  phases.forEach((phase, pi) => {
-    const div = document.createElement('div');
-    div.className = 'phase open';
-
-    const header = document.createElement('div');
-    header.className = 'phase-header';
-    header.innerHTML = `
-      <span class="phase-num">${phase.num}</span>
-      <span class="phase-title">${phase.title}</span>
-      <span class="phase-duration">${phase.duration}</span>
-      <span class="chevron">▼</span>`;
-    header.addEventListener('click', () => div.classList.toggle('open'));
-    div.appendChild(header);
-
-    const body = document.createElement('div');
-    body.className = 'phase-body';
-
-    phase.days.forEach((day, di) => {
-      const key = `p${pi}_d${di}`;
-      const isChecked = !!checked[key];
-
-      const item = document.createElement('div');
-      item.className = 'day-item' + (isChecked ? ' completed' : '');
-
-      item.innerHTML = `
-        <div class="day-row">
-          <div class="day-check ${isChecked ? 'checked' : ''}">${isChecked ? '✓' : ''}</div>
-          <span class="day-label">${day.label}</span>
-          <div class="day-content">
-            <div class="day-title">${day.title}</div>
-            <div class="day-desc">${day.desc}</div>
-            <div class="day-tags">${day.tags.map(t => `<span class="dtag ${t}">${t}</span>`).join('')}</div>
-          </div>
-          <span class="day-expand-icon">▼</span>
-        </div>
-        <div class="questions-panel">
-          <div class="diff-tabs">
-            <button class="diff-tab" data-diff="easy">🟢 Easy (5)</button>
-            <button class="diff-tab" data-diff="medium">🟡 Medium (5)</button>
-            <button class="diff-tab" data-diff="hard">🔴 Hard (5)</button>
-          </div>
-          <div class="qs-content" data-diff="easy"></div>
-          <div class="qs-content" data-diff="medium"></div>
-          <div class="qs-content" data-diff="hard"></div>
-        </div>`;
-
-      const checkEl = item.querySelector('.day-check');
-      const row = item.querySelector('.day-row');
-      const panel = item.querySelector('.questions-panel');
-
-      checkEl.addEventListener('click', (e) => {
-        e.stopPropagation();
-        checked[key] = !checked[key];
-        saveChecked();
-        render();
-        updateProgress();
-      });
-
-      row.addEventListener('click', (e) => {
-        if (e.target === checkEl || checkEl.contains(e.target)) return;
-        const isOpen = item.classList.toggle('qs-open');
-        if (isOpen) {
-          const easyTab = panel.querySelector('.diff-tab[data-diff="easy"]');
-          showQuestions(panel, day.title, day.desc, 'easy', easyTab);
-        }
-      });
-
-      panel.querySelectorAll('.diff-tab').forEach(tab => {
-        tab.addEventListener('click', (e) => {
-          e.stopPropagation();
-          showQuestions(panel, day.title, day.desc, tab.dataset.diff, tab);
-        });
-      });
-
-      body.appendChild(item);
-    });
-
-    const res = document.createElement('div');
-    res.className = 'resources';
-    res.innerHTML = `<div class="res-title">// resources</div><ul class="res-list">${phase.resources.map(r=>`<li>${r}</li>`).join('')}</ul>`;
-    body.appendChild(res);
-
-    div.appendChild(body);
-    container.appendChild(div);
-  });
-
-  updateProgress();
-}
-
-render();
-</script>
-</body>
-</html>
+const QUESTIONS = {"p0_d0": {"easy": [{"q": "Retrieve all columns from SalesLT.Customer.", "tables": ["Customer"], "hint": "SELECT * FROM SalesLT.Customer"}, {"q": "Select FirstName, LastName, and EmailAddress from SalesLT.Customer.", "tables": ["Customer"], "hint": "List specific column names after SELECT"}, {"q": "List all products from SalesLT.Product with Name aliased as 'ProductName' and ListPrice aliased as 'Price'.", "tables": ["Product"], "hint": "Use AS keyword for column aliases"}, {"q": "Show the top 10 rows from SalesLT.SalesOrderHeader ordered by OrderDate descending.", "tables": ["SalesOrderHeader"], "hint": "Use TOP 10 with ORDER BY OrderDate DESC"}, {"q": "List distinct Color values available in SalesLT.Product.", "tables": ["Product"], "hint": "Use SELECT DISTINCT Color"}], "medium": [{"q": "From SalesLT.Customer, display a computed column 'FullName' (FirstName + space + LastName) and CompanyName for the top 20 customers ordered by LastName.", "tables": ["Customer"], "hint": "Concatenate with + or CONCAT(), use TOP 20 ORDER BY"}, {"q": "From SalesLT.Product, show Name, Color, ListPrice, StandardCost, and a computed column 'Margin' = ListPrice - StandardCost. Order by Margin descending.", "tables": ["Product"], "hint": "Arithmetic expression in SELECT, ORDER BY computed alias"}, {"q": "From SalesLT.SalesOrderHeader, select SalesOrderID, OrderDate, TotalDue, and a computed 'TaxPercent' = TaxAmt/SubTotal*100. Show top 5 by TotalDue.", "tables": ["SalesOrderHeader"], "hint": "Division expression; watch for divide-by-zero with NULLIF"}, {"q": "From SalesLT.Address, retrieve distinct combinations of City and StateProvince ordered by StateProvince ASC, City ASC.", "tables": ["Address"], "hint": "SELECT DISTINCT on two columns"}, {"q": "From SalesLT.Product, show the top 5 most expensive products with Name, ProductNumber, Color, and ListPrice.", "tables": ["Product"], "hint": "TOP 5 ORDER BY ListPrice DESC"}], "hard": [{"q": "From SalesLT.Product, use ROW_NUMBER() OVER (ORDER BY ListPrice DESC) to number products by price. Show top 10 with their row number, Name, and ListPrice.", "tables": ["Product"], "hint": "ROW_NUMBER() OVER (ORDER BY ListPrice DESC) as PriceRank"}, {"q": "From SalesLT.SalesOrderHeader, compute yearly total revenue (SUM TotalDue), order count, and average order value per year. Display YEAR(OrderDate) and three metrics.", "tables": ["SalesOrderHeader"], "hint": "GROUP BY YEAR(OrderDate) with SUM, COUNT, AVG"}, {"q": "From SalesLT.Product, return Name, ListPrice, and label each product 'Budget' (<100), 'Mid-Range' (100-999), or 'Premium' (>=1000) in a 'PriceCategory' column.", "tables": ["Product"], "hint": "Use CASE WHEN ListPrice < 100 THEN 'Budget'..."}, {"q": "From SalesLT.Customer, show CustomerID, FullName, and a column 'HasMiddleName' showing 'Yes' or 'No' based on MiddleName being NULL.", "tables": ["Customer"], "hint": "CASE WHEN MiddleName IS NULL THEN 'No' ELSE 'Yes' END"}, {"q": "From SalesLT.SalesOrderHeader, show orders from Q4 only (October-December). Include SalesOrderID, OrderDate, TotalDue. Order by TotalDue DESC.", "tables": ["SalesOrderHeader"], "hint": "WHERE MONTH(OrderDate) BETWEEN 10 AND 12"}]}, "p0_d1": {"easy": [{"q": "From SalesLT.Customer, find all customers whose LastName starts with 'S'.", "tables": ["Customer"], "hint": "WHERE LastName LIKE 'S%'"}, {"q": "From SalesLT.Product, list products where ListPrice is between 100 and 500 inclusive.", "tables": ["Product"], "hint": "WHERE ListPrice BETWEEN 100 AND 500"}, {"q": "From SalesLT.SalesOrderHeader, find orders where Status = 5.", "tables": ["SalesOrderHeader"], "hint": "WHERE Status = 5"}, {"q": "From SalesLT.Product, list products where Color is 'Red', 'Blue', or 'Black'.", "tables": ["Product"], "hint": "WHERE Color IN ('Red', 'Blue', 'Black')"}, {"q": "From SalesLT.Customer, find all customers where MiddleName is NULL.", "tables": ["Customer"], "hint": "WHERE MiddleName IS NULL - never use = NULL"}], "medium": [{"q": "From SalesLT.Product, find products priced above $1000, not discontinued (DiscontinuedDate IS NULL), and with a non-NULL Color.", "tables": ["Product"], "hint": "Combine AND: ListPrice > 1000 AND DiscontinuedDate IS NULL AND Color IS NOT NULL"}, {"q": "From SalesLT.Customer, find customers whose EmailAddress contains 'adventure-works.com' and CompanyName IS NOT NULL.", "tables": ["Customer"], "hint": "LIKE '%adventure-works.com%' AND CompanyName IS NOT NULL"}, {"q": "From SalesLT.SalesOrderHeader, find orders placed between '2007-01-01' and '2007-12-31' with TotalDue > $5000.", "tables": ["SalesOrderHeader"], "hint": "BETWEEN dates AND TotalDue > 5000"}, {"q": "From SalesLT.Product, find products whose ProductNumber starts with 'BK-' AND ListPrice is NOT between 200 and 800.", "tables": ["Product"], "hint": "LIKE 'BK-%' AND ListPrice NOT BETWEEN 200 AND 800"}, {"q": "From SalesLT.Address, list addresses in 'United States' or 'Canada' but exclude cities starting with 'San'.", "tables": ["Address"], "hint": "CountryRegion IN (...) AND City NOT LIKE 'San%'"}], "hard": [{"q": "From SalesLT.Product, find products where BOTH Weight IS NULL AND Size IS NULL but ListPrice > 500. Use parentheses to make operator precedence clear.", "tables": ["Product"], "hint": "(Weight IS NULL AND Size IS NULL) AND ListPrice > 500"}, {"q": "From SalesLT.SalesOrderHeader, find orders where Freight is more than 5% of SubTotal. Show SalesOrderID, SubTotal, Freight, and FreightPct.", "tables": ["SalesOrderHeader"], "hint": "WHERE Freight > SubTotal * 0.05; compute Freight/SubTotal*100 in SELECT"}, {"q": "From SalesLT.Product, find products that have a SellEndDate set but that SellEndDate is still in the future (> GETDATE()). What business scenario does this represent?", "tables": ["Product"], "hint": "WHERE SellEndDate IS NOT NULL AND SellEndDate > GETDATE()"}, {"q": "From SalesLT.SalesOrderHeader, find orders where ShipDate IS NULL AND OrderDate was more than 30 days ago. These are overdue unshipped orders.", "tables": ["SalesOrderHeader"], "hint": "WHERE ShipDate IS NULL AND DATEDIFF(DAY, OrderDate, GETDATE()) > 30"}, {"q": "From SalesLT.Customer, find customers where EmailAddress does NOT contain a dot before the @ symbol (e.g. 'johnsmith@domain.com' matches but 'john.smith@domain.com' does not).", "tables": ["Customer"], "hint": "Use CHARINDEX('.', LEFT(EmailAddress, CHARINDEX('@', EmailAddress))) = 0"}]}, "p0_d2": {"easy": [{"q": "List all products from SalesLT.Product ordered by ListPrice from highest to lowest.", "tables": ["Product"], "hint": "ORDER BY ListPrice DESC"}, {"q": "Get all customers from SalesLT.Customer ordered by LastName ASC, then FirstName ASC.", "tables": ["Customer"], "hint": "ORDER BY LastName ASC, FirstName ASC"}, {"q": "List SalesLT.SalesOrderHeader records ordered by OrderDate DESC to see the most recent orders first.", "tables": ["SalesOrderHeader"], "hint": "ORDER BY OrderDate DESC"}, {"q": "From SalesLT.Product, show products ordered by Color ASC and note where NULL values appear in the result.", "tables": ["Product"], "hint": "NULLs sort first in ASC in SQL Server by default"}, {"q": "Show the top 5 most expensive products from SalesLT.Product.", "tables": ["Product"], "hint": "TOP 5 with ORDER BY ListPrice DESC"}], "medium": [{"q": "From SalesLT.Product, list products ordered by ProductCategoryID ASC, then by ListPrice DESC within each category.", "tables": ["Product"], "hint": "ORDER BY ProductCategoryID ASC, ListPrice DESC"}, {"q": "From SalesLT.Customer, order by CompanyName ASC but push all NULL CompanyName records to the END of results.", "tables": ["Customer"], "hint": "ORDER BY CASE WHEN CompanyName IS NULL THEN 1 ELSE 0 END, CompanyName"}, {"q": "From SalesLT.Product, retrieve products sorted by computed margin ((ListPrice-StandardCost)/ListPrice*100) DESC. Show Name, ListPrice, StandardCost, and MarginPct.", "tables": ["Product"], "hint": "Compute expression in SELECT, reference alias in ORDER BY"}, {"q": "From SalesLT.SalesOrderHeader, retrieve rows 11 to 20 ordered by TotalDue DESC using OFFSET-FETCH.", "tables": ["SalesOrderHeader"], "hint": "ORDER BY TotalDue DESC OFFSET 10 ROWS FETCH NEXT 10 ROWS ONLY"}, {"q": "From SalesLT.Address, list unique cities ordered alphabetically, accounting for possible leading/trailing spaces.", "tables": ["Address"], "hint": "SELECT DISTINCT LTRIM(RTRIM(City)) ORDER BY LTRIM(RTRIM(City))"}], "hard": [{"q": "From SalesLT.Product, sort so Red products appear first, Black second, all others third, NULL color last - all within each group ordered by Name ASC.", "tables": ["Product"], "hint": "ORDER BY CASE Color WHEN 'Red' THEN 1 WHEN 'Black' THEN 2 WHEN NULL THEN 4 ELSE 3 END, Name"}, {"q": "From SalesLT.Customer, list customers ordered by LENGTH of LastName descending (longest names first), then by LastName ASC for ties.", "tables": ["Customer"], "hint": "ORDER BY LEN(LastName) DESC, LastName ASC"}, {"q": "Use TOP 10 PERCENT on SalesLT.Product ordered by ListPrice DESC. How many rows does this return and why?", "tables": ["Product"], "hint": "TOP 10 PERCENT rounds up - check total row count * 0.1"}, {"q": "Implement page 3 of SalesLT.SalesOrderHeader (page size=10) ordered by SalesOrderID. What are the risks of offset pagination with concurrent inserts?", "tables": ["SalesOrderHeader"], "hint": "OFFSET 20 ROWS FETCH NEXT 10 ROWS ONLY - concurrent insert can shift rows"}, {"q": "From SalesLT.SalesOrderHeader, sort orders by day of week they were placed (Monday first). Use DATEPART(WEEKDAY). Account for @@DATEFIRST setting.", "tables": ["SalesOrderHeader"], "hint": "DATEPART(dw, OrderDate) result depends on @@DATEFIRST value"}]}, "p0_d3": {"easy": [{"q": "Count the total number of customers in SalesLT.Customer.", "tables": ["Customer"], "hint": "SELECT COUNT(*) FROM SalesLT.Customer"}, {"q": "Find the maximum and minimum ListPrice from SalesLT.Product.", "tables": ["Product"], "hint": "SELECT MAX(ListPrice), MIN(ListPrice)"}, {"q": "Calculate the total SUM of TotalDue from SalesLT.SalesOrderHeader.", "tables": ["SalesOrderHeader"], "hint": "SELECT SUM(TotalDue)"}, {"q": "Find the average ListPrice of all products in SalesLT.Product.", "tables": ["Product"], "hint": "SELECT AVG(ListPrice)"}, {"q": "Count how many products in SalesLT.Product have a non-NULL Color. Why is COUNT(Color) different from COUNT(*)?", "tables": ["Product"], "hint": "COUNT(column) ignores NULLs; COUNT(*) counts all rows"}], "medium": [{"q": "From SalesLT.SalesOrderDetail, find total quantity ordered (SUM of OrderQty) and total revenue (SUM of LineTotal) across all order lines.", "tables": ["SalesOrderDetail"], "hint": "SUM(OrderQty) and SUM(LineTotal) in one SELECT"}, {"q": "From SalesLT.Product, compute average ListPrice for products WITH a Color vs those WITHOUT. Show both averages in one query.", "tables": ["Product"], "hint": "GROUP BY CASE WHEN Color IS NULL THEN 'No Color' ELSE 'Has Color' END"}, {"q": "From SalesLT.SalesOrderHeader, find total revenue, average
