@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SQL Server Study Plan</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;700&display=swap');
+
+  :root {
+    --bg: #0e1117;
+    --surface: #161b27;
+    --card: #1e2535;
+    --border: #2a3347;
+    --accent: #00d4aa;
+    --accent2: #5b8dee;
+    --warn: #f5a623;
+    --text: #e2e8f0;
+    --muted: #8892a4;
+    --done: #22c55e;
+    --easy: #22c55e;
+    --medium: #f5a623;
+    --hard: #ef4444;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', sans-serif;
+    min-height: 100vh;
+    padding: 24px 16px 48px;
+  }
+
+  header { max-width: 780px; margin: 0 auto 24px; }
+  .tag { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.12em; color: var(--accent); text-transform: uppercase; margin-bottom: 10px; }
+  h1 { font-size: clamp(22px, 5vw, 34px); font-weight: 700; line-height: 1.15; margin-bottom: 8px; }
+  h1 span { color: var(--accent); }
+  .subtitle { color: var(--muted); font-size: 13px; line-height: 1.6; }
+
+  .meta-row { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+  .meta-chip { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 6px 12px; font-size: 11px; color: var(--muted); display: flex; align-items: center; gap: 5px; }
+  .meta-chip strong { color: var(--text); }
+
+  .db-banner {
+    max-width: 780px; margin: 0 auto 20px;
+    background: linear-gradient(135deg, rgba(0,212,170,0.08), rgba(91,141,238,0.08));
+    border: 1px solid rgba(0,212,170,0.25); border-radius: 10px; padding: 12px 16px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .db-icon { font-size: 22px; }
+  .db-info { flex: 1; }
+  .db-title { font-size: 13px; font-weight: 600; color: var(--accent); margin-bottom: 2px; }
+  .db-desc { font-size: 11px; color: var(--muted); line-height: 1.5; }
+
+  .progress-wrap { max-width: 780px; margin: 0 auto 20px; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; }
+  .progress-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+  .progress-label span { color: var(--accent); font-family: 'IBM Plex Mono', monospace; }
+  .bar-bg { background: var(--border); border-radius: 99px; height: 5px; overflow: hidden; }
+  .bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 99px; transition: width 0.5s ease; }
+
+  .container { max-width: 780px; margin: 0 auto; }
+
+  .phase { margin-bottom: 20px; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .phase-header { display: flex; align-items: center; gap: 12px; padding: 13px 16px; background: var(--surface); cursor: pointer; user-select: none; }
+  .phase-num { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--accent); min-width: 26px; }
+  .phase-title { font-weight: 600; font-size: 14px; flex: 1; }
+  .phase-duration { font-size: 11px; color: var(--muted); font-family: 'IBM Plex Mono', monospace; }
+  .chevron { color: var(--muted); font-size: 11px; transition: transform 0.2s; }
+  .phase.open .chevron { transform: rotate(180deg); }
+  .phase-body { display: none; }
+  .phase.open .phase-body { display: block; }
+
+  .day-item { border-top: 1px solid var(--border); }
+  .day-row { display: flex; align-items: flex-start; gap: 12px; padding: 11px 16px; cursor: pointer; transition: background 0.15s; }
+  .day-row:hover { background: rgba(255,255,255,0.025); }
+
+  .day-check { width: 17px; height: 17px; border: 2px solid var(--border); border-radius: 4px; flex-shrink: 0; margin-top: 2px; display: flex; align-items: center; justify-content: center; transition: all 0.15s; font-size: 10px; cursor: pointer; }
+  .day-check.checked { background: var(--done); border-color: var(--done); color: #fff; }
+
+  .day-label { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--accent2); min-width: 48px; margin-top: 2px; }
+  .day-content { flex: 1; }
+  .day-title { font-size: 13px; font-weight: 500; margin-bottom: 3px; }
+  .day-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .day-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 5px; }
+  .dtag { font-size: 10px; padding: 2px 6px; border-radius: 4px; font-family: 'IBM Plex Mono', monospace; }
+  .dtag.practice { background: rgba(0,212,170,0.12); color: var(--accent); }
+  .dtag.theory { background: rgba(91,141,238,0.12); color: var(--accent2); }
+  .dtag.project { background: rgba(245,166,35,0.12); color: var(--warn); }
+
+  .day-expand-icon { color: var(--muted); font-size: 10px; margin-top: 4px; transition: transform 0.2s; flex-shrink: 0; }
+  .day-item.qs-open .day-expand-icon { transform: rotate(180deg); }
+  .day-item.completed .day-title { text-decoration: line-through; color: var(--muted); }
+
+  /* Questions panel */
+  .questions-panel { display: none; border-top: 1px solid var(--border); background: rgba(0,0,0,0.2); }
+  .day-item.qs-open .questions-panel { display: block; }
+
+  .diff-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); }
+  .diff-tab {
+    flex: 1; padding: 10px 8px; font-size: 12px; font-family: 'IBM Plex Mono', monospace;
+    cursor: pointer; border: none; background: transparent; color: var(--muted);
+    transition: all 0.15s; border-bottom: 2px solid transparent; margin-bottom: -1px;
+  }
+  .diff-tab:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+  .diff-tab.active-easy { color: var(--easy); border-bottom-color: var(--easy); background: rgba(34,197,94,0.05); }
+  .diff-tab.active-medium { color: var(--medium); border-bottom-color: var(--medium); background: rgba(245,166,35,0.05); }
+  .diff-tab.active-hard { color: var(--hard); border-bottom-color: var(--hard); background: rgba(239,68,68,0.05); }
+
+  .qs-content { display: none; padding: 14px 16px; }
+  .qs-content.active { display: block; }
+
+  .q-loading { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 13px; padding: 8px 0; }
+  .spinner { width: 15px; height: 15px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .q-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .q-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; position: relative; border-left: 3px solid transparent;
+  }
+  .q-card.easy { border-left-color: var(--easy); }
+  .q-card.medium { border-left-color: var(--medium); }
+  .q-card.hard { border-left-color: var(--hard); }
+
+  .q-num { font-family: 'IBM Plex Mono', monospace; font-size: 10px; margin-bottom: 5px; }
+  .q-num.easy { color: var(--easy); }
+  .q-num.medium { color: var(--medium); }
+  .q-num.hard { color: var(--hard); }
+
+  .q-text { color: var(--text); font-size: 13px; line-height: 1.65; margin-bottom: 6px; }
+
+  .q-tables { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 6px; }
+  .q-table-tag { font-size: 10px; font-family: 'IBM Plex Mono', monospace; background: rgba(91,141,238,0.12); color: var(--accent2); padding: 2px 7px; border-radius: 4px; }
+
+  .q-hint { font-size: 11px; color: var(--muted); font-style: italic; border-top: 1px solid var(--border); padding-top: 6px; margin-top: 2px; }
+
+  .q-error { color: var(--hard); font-size: 13px; padding: 12px; background: rgba(239,68,68,0.08); border-radius: 8px; border: 1px solid rgba(239,68,68,0.2); }
+
+  .retry-btn { margin-top: 10px; padding: 6px 14px; background: transparent; border: 1px solid var(--border); border-radius: 6px; color: var(--muted); font-size: 12px; cursor: pointer; }
+  .retry-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .diff-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-family: 'IBM Plex Mono', monospace; padding: 2px 7px; border-radius: 4px; margin-bottom: 10px; }
+  .diff-badge.easy { background: rgba(34,197,94,0.12); color: var(--easy); }
+  .diff-badge.medium { background: rgba(245,166,35,0.12); color: var(--medium); }
+  .diff-badge.hard { background: rgba(239,68,68,0.12); color: var(--hard); }
+
+  .resources { padding: 11px 16px; border-top: 1px solid var(--border); background: rgba(0,212,170,0.03); }
+  .res-title { font-size: 10px; color: var(--accent); margin-bottom: 5px; font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.1em; }
+  .res-list { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+  .res-list li { font-size: 11px; color: var(--muted); padding-left: 12px; position: relative; }
+  .res-list li::before { content: '→'; position: absolute; left: 0; color: var(--accent); }
+
+  footer { max-width: 780px; margin: 24px auto 0; text-align: center; font-size: 11px; color: var(--muted); font-family: 'IBM Plex Mono', monospace; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="tag">// study plan</div>
+  <h1>SQL Server <span>Mastery</span></h1>
+  <p class="subtitle">8-week plan · 1 hour/day · Click any day for AI-generated practice questions</p>
+  <div class="meta-row">
+    <div class="meta-chip">⏱ <strong>1 hr / day</strong></div>
+    <div class="meta-chip">📅 <strong>8 weeks · 40 days</strong></div>
+    <div class="meta-chip">🤖 <strong>AI questions</strong></div>
+    <div class="meta-chip">🗄️ <strong>AdventureWorksLT2022</strong></div>
+  </div>
+</header>
+
+<div class="db-banner">
+  <div class="db-icon">🗄️</div>
+  <div class="db-info">
+    <div class="db-title">AdventureWorksLT2022 Database</div>
+    <div class="db-desc">All questions use real tables: <code style="color:var(--accent2)">SalesLT.Customer</code> · <code style="color:var(--accent2)">SalesLT.Product</code> · <code style="color:var(--accent2)">SalesLT.SalesOrderHeader</code> · <code style="color:var(--accent2)">SalesLT.SalesOrderDetail</code> · <code style="color:var(--accent2)">SalesLT.Address</code> · <code style="color:var(--accent2)">SalesLT.ProductCategory</code> and more.</div>
+  </div>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-label">Overall progress <span id="prog-text">0 / 40 days</span></div>
+  <div class="bar-bg"><div class="bar-fill" id="prog-bar" style="width:0%"></div></div>
+</div>
+
+<div class="container" id="plan"></div>
+<footer>Click a day row → tabs for 🟢 Easy · 🟡 Medium · 🔴 Hard · 5 questions each · Progress auto-saves</footer>
+
+<script>
+// AdventureWorksLT2022 schema context passed to the AI
+const AW_SCHEMA = `AdventureWorksLT2022 database schema (use SalesLT schema prefix):
+
+Tables and key columns:
+- SalesLT.Customer: CustomerID, NameStyle, Title, FirstName, MiddleName, LastName, Suffix, CompanyName, SalesPerson, EmailAddress, Phone, PasswordHash, PasswordSalt, rowguid, ModifiedDate
+- SalesLT.Address: AddressID, AddressLine1, AddressLine2, City, StateProvince, CountryRegion, PostalCode, rowguid, ModifiedDate
+- SalesLT.CustomerAddress: CustomerID, AddressID, AddressType, rowguid, ModifiedDate
+- SalesLT.Product: ProductID, Name, ProductNumber, Color, StandardCost, ListPrice, Size, Weight, ProductCategoryID, ProductModelID, SellStartDate, SellEndDate, DiscontinuedDate, ThumbNailPhoto, ThumbnailPhotoFileName, rowguid, ModifiedDate
+- SalesLT.ProductCategory: ProductCategoryID, ParentProductCategoryID, Name, rowguid, ModifiedDate
+- SalesLT.ProductModel: ProductModelID, Name, CatalogDescription, rowguid, ModifiedDate
+- SalesLT.ProductModelProductDescription: ProductModelID, ProductDescriptionID, Culture, rowguid, ModifiedDate
+- SalesLT.ProductDescription: ProductDescriptionID, Description, rowguid, ModifiedDate
+- SalesLT.SalesOrderHeader: SalesOrderID, RevisionNumber, OrderDate, DueDate, ShipDate, Status, OnlineOrderFlag, SalesOrderNumber, PurchaseOrderNumber, AccountNumber, CustomerID, ShipToAddressID, BillToAddressID, ShipMethod, CreditCardApprovalCode, SubTotal, TaxAmt, Freight, TotalDue, Comment, rowguid, ModifiedDate
+- SalesLT.SalesOrderDetail: SalesOrderID, SalesOrderDetailID, OrderQty, ProductID, UnitPrice, UnitPriceDiscount, LineTotal, rowguid, ModifiedDate`;
+
+const phases = [
+  {
+    num:"01", title:"Solidifying the Foundations", duration:"Week 1–2 · 10 days",
+    resources:["Microsoft SQL Server Docs (docs.microsoft.com)","SQLZoo.net — free interactive exercises","W3Schools SQL — quick reference"],
+    days:[
+      {label:"Day 1",  title:"SELECT deep dive",         desc:"SELECT with column aliases, DISTINCT, TOP n. Practice on Customer and Product tables.", tags:["practice","theory"]},
+      {label:"Day 2",  title:"WHERE & filtering",         desc:"AND/OR/NOT, BETWEEN, IN, LIKE, NULL checks on Customer, Product, SalesOrderHeader.", tags:["practice"]},
+      {label:"Day 3",  title:"ORDER BY & sorting",        desc:"Single & multi-column sorts, ASC/DESC, NULL ordering on Product and Customer.", tags:["practice"]},
+      {label:"Day 4",  title:"Aggregate functions",       desc:"COUNT, SUM, AVG, MIN, MAX on SalesOrderDetail and SalesOrderHeader.", tags:["theory","practice"]},
+      {label:"Day 5",  title:"GROUP BY & HAVING",         desc:"GROUP BY on SalesOrderHeader, ProductCategory. HAVING for filtered aggregates.", tags:["practice"]},
+      {label:"Day 6",  title:"JOINs — INNER & LEFT",      desc:"Join Customer with SalesOrderHeader, Product with ProductCategory.", tags:["practice","theory"]},
+      {label:"Day 7",  title:"JOINs — RIGHT, FULL, CROSS",desc:"RIGHT JOIN, FULL OUTER JOIN, CROSS JOIN across SalesLT tables. Self-joins.", tags:["theory","practice"]},
+      {label:"Day 8",  title:"Subqueries",                desc:"Scalar, correlated, table subqueries. EXISTS vs IN on Orders and Products.", tags:["theory","practice"]},
+      {label:"Day 9",  title:"String & date functions",   desc:"LEN, SUBSTRING, CHARINDEX on Customer names. DATEADD, DATEDIFF on OrderDate.", tags:["practice"]},
+      {label:"Day 10", title:"Week 1–2 mini project",     desc:"Answer 5 business questions: top customers, bestselling products, revenue by region.", tags:["project"]},
+    ]
+  },
+  {
+    num:"02", title:"Intermediate SQL Techniques", duration:"Week 3–4 · 10 days",
+    resources:["LeetCode SQL — free tier","SQLServerTutorial.net","Brent Ozar's blog"],
+    days:[
+      {label:"Day 11", title:"CTEs",                       desc:"WITH clause to simplify multi-step queries on SalesOrderHeader and Customer.", tags:["theory","practice"]},
+      {label:"Day 12", title:"Window functions — basics",   desc:"ROW_NUMBER(), RANK(), DENSE_RANK() on SalesOrderDetail and Product prices.", tags:["theory","practice"]},
+      {label:"Day 13", title:"Window functions — advanced", desc:"LAG(), LEAD(), running totals with SUM() OVER on monthly sales data.", tags:["practice"]},
+      {label:"Day 14", title:"CASE expressions",            desc:"Categorize products by price range, label order status using CASE.", tags:["practice"]},
+      {label:"Day 15", title:"UNION, INTERSECT, EXCEPT",    desc:"Combine results from Address, Customer across set operators.", tags:["theory","practice"]},
+      {label:"Day 16", title:"NULL handling",               desc:"ISNULL, COALESCE, NULLIF on MiddleName, Color, Size columns.", tags:["theory","practice"]},
+      {label:"Day 17", title:"INSERT, UPDATE, DELETE",      desc:"Modify Customer, Product data safely. Use OUTPUT clause.", tags:["practice"]},
+      {label:"Day 18", title:"Transactions & error handling",desc:"BEGIN/COMMIT/ROLLBACK, TRY…CATCH on order insert scenarios.", tags:["theory","practice"]},
+      {label:"Day 19", title:"Views",                       desc:"Create views over SalesOrderHeader + Customer. Indexed views intro.", tags:["theory","practice"]},
+      {label:"Day 20", title:"Week 3–4 project",            desc:"Month-over-month sales report, customer ranking, product performance view.", tags:["project"]},
+    ]
+  },
+  {
+    num:"03", title:"Performance & Query Optimization", duration:"Week 5–6 · 10 days",
+    resources:["Brent Ozar's sp_BlitzIndex (free)","SQL Server Execution Plans — Grant Fritchey (free PDF)","SQLSkills.com"],
+    days:[
+      {label:"Day 21", title:"How SQL Server executes queries", desc:"Parse → Compile → Optimize → Execute on AdventureWorks queries.", tags:["theory"]},
+      {label:"Day 22", title:"Reading execution plans",         desc:"Actual vs estimated plans for SalesOrderHeader joins and Product seeks.", tags:["theory","practice"]},
+      {label:"Day 23", title:"Index fundamentals",              desc:"Clustered vs non-clustered on SalesLT tables. Heap vs B-tree.", tags:["theory"]},
+      {label:"Day 24", title:"Creating & tuning indexes",       desc:"Covering indexes on SalesOrderDetail. Missing index recommendations.", tags:["practice"]},
+      {label:"Day 25", title:"Index maintenance",               desc:"Fragmentation on SalesLT indexes. REBUILD vs REORGANIZE decisions.", tags:["theory","practice"]},
+      {label:"Day 26", title:"Query tuning techniques",         desc:"SARGability on OrderDate, CustomerID. Avoid implicit conversions.", tags:["practice","theory"]},
+      {label:"Day 27", title:"Temp tables vs table variables vs CTEs", desc:"Performance comparison using SalesOrderHeader aggregations.", tags:["theory","practice"]},
+      {label:"Day 28", title:"Statistics & cardinality",        desc:"Statistics on Product, SalesOrderDetail. Cardinality estimator behavior.", tags:["theory"]},
+      {label:"Day 29", title:"DMVs for performance monitoring", desc:"sys.dm_exec_query_stats for top queries on AdventureWorks.", tags:["practice"]},
+      {label:"Day 30", title:"Optimization project",            desc:"Find 3 slow queries in AdventureWorks, analyze and optimize each.", tags:["project"]},
+    ]
+  },
+  {
+    num:"04", title:"Advanced Topics & Real-World Skills", duration:"Week 7–8 · 10 days",
+    resources:["Microsoft Learn — SQL Server Advanced (free)","Itzik Ben-Gan T-SQL Fundamentals (book)","Stack Overflow Data Explorer"],
+    days:[
+      {label:"Day 31", title:"Stored procedures",          desc:"SPs for order processing, customer lookup using AdventureWorks tables.", tags:["theory","practice"]},
+      {label:"Day 32", title:"User-defined functions",     desc:"TVFs for product search, scalar UDF for discount calculation.", tags:["theory","practice"]},
+      {label:"Day 33", title:"Triggers",                   desc:"AFTER INSERT trigger on SalesOrderHeader to log changes.", tags:["theory","practice"]},
+      {label:"Day 34", title:"Dynamic SQL",                desc:"Dynamic search SP for Product with optional filters using sp_executesql.", tags:["theory","practice"]},
+      {label:"Day 35", title:"JSON & XML in SQL Server",   desc:"FOR JSON from SalesOrderHeader + Detail. Parse XML product catalog.", tags:["practice"]},
+      {label:"Day 36", title:"Partitioning & large tables", desc:"Partition SalesOrderHeader by OrderDate year. Switching strategy.", tags:["theory"]},
+      {label:"Day 37", title:"Security fundamentals",      desc:"Schema permissions on SalesLT. Row-level security for SalesPerson.", tags:["theory","practice"]},
+      {label:"Day 38", title:"Backup, restore & HA basics", desc:"Backup AdventureWorks. Recovery models, Always On overview.", tags:["theory"]},
+      {label:"Day 39", title:"SQL Server Agent & automation", desc:"Automate index rebuild job for SalesLT tables nightly.", tags:["practice"]},
+      {label:"Day 40", title:"Capstone project",           desc:"Full solution: schema, SPs, indexes, error handling, security on AdventureWor
